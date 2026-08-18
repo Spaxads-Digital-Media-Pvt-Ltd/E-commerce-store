@@ -1,0 +1,105 @@
+// "Under ₹999" store — Prisma schema.
+//
+// PORTABILITY NOTE: this schema deliberately avoids native enums and scalar
+// arrays so it runs unchanged on SQLite (local dev) AND PostgreSQL
+// (production — Neon/Supabase). To switch, change `provider` below to
+// "postgresql" and point DATABASE_URL at your Postgres instance.
+//
+// - Status/paymentMethod fields are strings constrained by Zod at the API
+//   boundary (see src/lib/validations + src/lib/constants.ts).
+// - Product.images is a JSON-encoded string[] (see src/lib/serializers.ts).
+
+generator client {
+  provider = "prisma-client-js"
+  // Ship the Linux query engines too, so the client still works after you
+  // deploy to an AWS server / container. "native" keeps local (macOS) working.
+  //  - debian-openssl-3.0.x → Ubuntu 22.04+, Debian 12
+  //  - rhel-openssl-3.0.x    → Amazon Linux 2023, RHEL 9
+  // If you build the app ON the Linux server itself, `native` alone is enough;
+  // these extra targets only matter when building on your Mac and shipping.
+  binaryTargets = ["native", "debian-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // Supabase (production). Use the POOLED connection string here.
+  url       = env("DATABASE_URL")
+  // Supabase DIRECT (non-pooled) connection — used only for migrations
+  // (`prisma migrate` / `prisma db push`). Falls back to DATABASE_URL if unset.
+  directUrl = env("DIRECT_URL")
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  icon     String // lucide-react icon name
+  position Int       @default(0)
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  slug        String      @unique
+  description String
+  price       Int // in whole rupees — always ≤ 999
+  mrp         Int // strikethrough "original" price
+  images      String // JSON-encoded array of image URLs
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  stock       Int         @default(0)
+  rating      Float       @default(0)
+  ratingCount Int         @default(0)
+  isActive    Boolean     @default(true)
+  isFeatured  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+
+  @@index([categoryId, isActive])
+  @@index([price])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique // ORD-YYYYMMDD-XXXXX
+  // Phase 2 accounts bolt on here: nullable now BY DESIGN so adding a User
+  // table later is a migration, not a rewrite (blueprint §17).
+  userId          String?
+  customerName    String
+  phone           String
+  email           String?
+  addressLine1    String
+  addressLine2    String?
+  city            String
+  state           String
+  pincode         String
+  subtotal        Int // recomputed server-side, never client-supplied
+  shippingFee     Int
+  total           Int
+  paymentMethod   String // COD | RAZORPAY
+  paymentStatus   String // PENDING | PAID | FAILED
+  status          String // PENDING_PAYMENT | PLACED | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
+  razorpayOrderId String?     @unique
+  idempotencyKey  String?     @unique
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([phone])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  name      String // snapshot at time of order
+  price     Int // snapshot at time of order
+  qty       Int
+  image     String
+
+  @@index([orderId])
+}

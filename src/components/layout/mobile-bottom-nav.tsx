@@ -2,23 +2,30 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, LayoutGrid, PackageSearch, ShoppingCart } from "lucide-react";
+import { Home, LayoutGrid, ShoppingCart, User } from "lucide-react";
 import { selectCartCount, useCart } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 
-// No-login Phase 1: "Track Order" replaces the usual Account tab (§4).
-const TABS = [
+const BASE_TABS = [
   { href: "/", label: "Home", icon: Home },
   { href: "/categories", label: "Categories", icon: LayoutGrid },
   { href: "/cart", label: "Cart", icon: ShoppingCart },
-  { href: "/track-order", label: "Track Order", icon: PackageSearch },
 ];
 
-export function MobileBottomNav() {
+export function MobileBottomNav({ loggedIn }: { loggedIn: boolean }) {
   const pathname = usePathname();
   const count = useCart(selectCartCount);
   const hasHydrated = useCart((s) => s.hasHydrated);
   const shown = hasHydrated ? count : 0;
+
+  const TABS = [
+    ...BASE_TABS,
+    {
+      href: loggedIn ? "/account" : "/login",
+      label: loggedIn ? "Account" : "Login",
+      icon: User,
+    },
+  ];
 
   return (
     <nav

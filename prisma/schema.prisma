@@ -29,6 +29,17 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("customer") // "customer" | "admin"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  orders       Order[]
+}
+
 model Category {
   id       String    @id @default(cuid())
   name     String
@@ -64,9 +75,10 @@ model Product {
 model Order {
   id              String      @id @default(cuid())
   orderNumber     String      @unique // ORD-YYYYMMDD-XXXXX
-  // Phase 2 accounts bolt on here: nullable now BY DESIGN so adding a User
-  // table later is a migration, not a rewrite (blueprint §17).
+  // Nullable so historical/guest rows never break; checkout now requires
+  // login, so this is set on every new order going forward.
   userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
   customerName    String
   phone           String
   email           String?
@@ -83,6 +95,9 @@ model Order {
   status          String // PENDING_PAYMENT | PLACED | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
   razorpayOrderId String?     @unique
   idempotencyKey  String?     @unique
+  // Pre-existing column in the live DB, not written by this codebase.
+  // Kept (not managed) so schema pushes don't drop real data in it.
+  sprintpgxTransactionId String? @unique
   items           OrderItem[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt

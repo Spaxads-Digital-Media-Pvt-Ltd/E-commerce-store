@@ -62,3 +62,11 @@ export type OrderDTO = {
   createdAt: string;
   items: OrderItemDTO[];
 };
+
+// Never includes passwordHash.
+export type UserDTO = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/auth/session";
 import { createOrderSchema } from "@/lib/validations/order";
 import { computeTotals } from "@/lib/pricing";
 import { generateOrderNumber } from "@/lib/order-number";
@@ -46,6 +47,11 @@ const orderIncludes = {
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session) {
+      return apiError("Please log in to place an order.", 401);
+    }
+
     const ip = clientIp(req);
 
     // A handful of orders per minute is plenty for a real shopper (§13).
@@ -195,6 +201,7 @@ export async function POST(req: NextRequest) {
           return tx.order.create({
             data: {
               orderNumber,
+              userId: session.userId,
               customerName: input.customer.customerName,
               phone: input.customer.phone,
               email: input.customer.email || null,

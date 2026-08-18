@@ -1,5 +1,5 @@
-import type { Order, OrderItem, Product } from "@prisma/client";
-import type { OrderDTO, ProductDTO } from "@/types";
+import type { Order, OrderItem, Product, User } from "@prisma/client";
+import type { OrderDTO, ProductDTO, UserDTO } from "@/types";
 
 type ProductWithCategory = Product & {
   category: { name: string; slug: string };
@@ -63,5 +63,14 @@ export function toOrderDTO(order: OrderWithItems): OrderDTO {
       image: i.image,
       productSlug: i.product?.slug,
     })),
+  };
+}
+
+export function toUserDTO(user: User): UserDTO {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
   };
 }

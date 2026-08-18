@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 const TRUST_POINTS = [
   "Cash on Delivery",
   `Free delivery over ₹${FREE_SHIPPING_THRESHOLD}`,
-  "No login needed",
+  "Easy Returns",
 ];
 
 export function Hero() {

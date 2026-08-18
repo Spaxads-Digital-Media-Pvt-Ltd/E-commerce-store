@@ -1,11 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
-import { StickyCartBar } from "@/components/cart/sticky-cart-bar";
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Toaster } from "@/components/ui/sonner";
 import { STORE_NAME, STORE_TAGLINE } from "@/lib/constants";
 
@@ -33,7 +28,7 @@ export const metadata: Metadata = {
     template: `%s · ${STORE_NAME}`,
   },
   description:
-    "India's honest budget store — mobile accessories, fashion, home, beauty, toys & more, every single product ₹999 or under. Cash on Delivery, no login needed.",
+    "India's honest budget store — mobile accessories, fashion, home, beauty, toys & more, every single product ₹999 or under. Cash on Delivery available.",
   openGraph: {
     siteName: STORE_NAME,
     type: "website",
@@ -69,14 +64,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Header />
-        <main id="main-content" className="min-h-[60vh] pb-24 md:pb-0">
-          {children}
-        </main>
-        <Footer />
-        <MobileBottomNav />
-        <StickyCartBar />
-        <CartDrawer />
+        {children}
         <Toaster />
       </body>
     </html>

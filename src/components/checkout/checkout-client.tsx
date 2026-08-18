@@ -88,8 +88,12 @@ function Field({
 
 export function CheckoutClient({
   razorpayEnabled,
+  defaultName,
+  defaultEmail,
 }: {
   razorpayEnabled: boolean;
+  defaultName?: string;
+  defaultEmail?: string;
 }) {
   const router = useRouter();
   const items = useCart((s) => s.items);
@@ -119,7 +123,11 @@ export function CheckoutClient({
   } = useForm<AddressInput>({
     resolver: zodResolver(addressSchema),
     mode: "onTouched",
-    defaultValues: { state: "" },
+    defaultValues: {
+      state: "",
+      customerName: defaultName ?? "",
+      email: defaultEmail ?? "",
+    },
   });
 
   const totals = computeTotals(

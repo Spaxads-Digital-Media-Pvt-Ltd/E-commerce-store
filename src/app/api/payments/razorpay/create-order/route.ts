@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db } from "@/server/db";
 import { trackOrderSchema } from "@/lib/validations/order";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { apiError, serverErrorResponse, zodErrorResponse } from "@/lib/api";
-import { getRazorpay, isRazorpayConfigured } from "@/lib/razorpay";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
+import { getRazorpay, isRazorpayConfigured } from "@/server/razorpay";
 import { PAYMENT_METHODS, PAYMENT_STATUS } from "@/lib/constants";
 
 // POST /api/payments/razorpay/create-order

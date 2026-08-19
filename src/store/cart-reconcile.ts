@@ -1,5 +1,5 @@
 import type { CartItem, ProductDTO } from "@/types";
-import { MAX_QTY_PER_ITEM } from "./constants";
+import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 
 // Reconciles the locally-persisted cart against fresh product data from the
 // server (price/stock may have changed since the item was added). Pure and

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartItem } from "@/types";
-import { MAX_QTY_PER_ITEM } from "./constants";
+import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 
 // Guest cart — client-side only (blueprint §9). Persisted to localStorage via
 // zustand/persist. This state is a UI convenience: the server re-verifies

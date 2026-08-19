@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { CheckoutClient } from "@/components/checkout/checkout-client";
-import { isRazorpayConfigured } from "@/lib/razorpay";
-import { requireUser } from "@/lib/auth/session";
-import { db } from "@/lib/db";
+import { isRazorpayConfigured } from "@/server/razorpay";
+import { requireUser } from "@/server/auth/session";
+import { db } from "@/server/db";
 
 export const metadata: Metadata = {
   title: "Checkout",

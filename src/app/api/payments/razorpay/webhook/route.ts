@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { apiError, serverErrorResponse } from "@/lib/api";
-import { verifyWebhookSignature } from "@/lib/razorpay";
+import { db } from "@/server/db";
+import { apiError, serverErrorResponse } from "@/server/api";
+import { verifyWebhookSignature } from "@/server/razorpay";
 import { ORDER_STATUS, PAYMENT_STATUS } from "@/lib/constants";
 
 // POST /api/payments/razorpay/webhook

@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { CheckCircle2, PackageSearch, Truck } from "lucide-react";
 import type { OrderDTO } from "@/types";
-import { useCart } from "@/lib/cart-store";
+import { useCart } from "@/store/cart-store";
 import { PAYMENT_METHODS, PAYMENT_STATUS } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

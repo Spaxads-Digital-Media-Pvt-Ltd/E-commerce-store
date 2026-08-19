@@ -7,7 +7,7 @@ import {
   selectCartCount,
   selectCartSubtotal,
   useCart,
-} from "@/lib/cart-store";
+} from "@/store/cart-store";
 import { COPY, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

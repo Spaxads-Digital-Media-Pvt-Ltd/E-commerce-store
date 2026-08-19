@@ -1,7 +1,7 @@
 "use client";
 
 import { ShoppingCart } from "lucide-react";
-import { selectCartCount, useCart } from "@/lib/cart-store";
+import { selectCartCount, useCart } from "@/store/cart-store";
 
 export function CartButton() {
   const count = useCart(selectCartCount);

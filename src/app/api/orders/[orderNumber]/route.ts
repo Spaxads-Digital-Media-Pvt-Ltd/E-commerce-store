@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db } from "@/server/db";
 import { trackOrderSchema } from "@/lib/validations/order";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { toOrderDTO } from "@/lib/serializers";
-import { apiError, serverErrorResponse } from "@/lib/api";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { toOrderDTO } from "@/server/serializers";
+import { apiError, serverErrorResponse } from "@/server/api";
 
 // GET /api/orders/[orderNumber]?phone=XXXXXXXXXX
 //

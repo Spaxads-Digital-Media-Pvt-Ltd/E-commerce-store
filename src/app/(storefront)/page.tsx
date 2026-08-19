@@ -9,7 +9,7 @@ import {
   getCheapestPerCategory,
   getFeaturedProducts,
   getProducts,
-} from "@/lib/queries";
+} from "@/server/queries";
 
 export const revalidate = 60; // ISR — §14
 

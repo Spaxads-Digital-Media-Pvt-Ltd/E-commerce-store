@@ -32,12 +32,20 @@ export function LoginClient({ next }: { next: string }) {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        if (res.status === 403 && data.requiresVerification) {
+          router.push(
+            `/verify-email?email=${encodeURIComponent(data.email ?? input.email)}&next=${encodeURIComponent(next)}`
+          );
+          setSubmitting(false);
+          return;
+        }
         toast.error(data.error ?? "Couldn't log in — please try again.");
         setSubmitting(false);
         return;
       }
       router.push(next);
       router.refresh();
+      setSubmitting(false);
     } catch {
       toast.error("Network error — check your connection and try again.");
       setSubmitting(false);
@@ -70,7 +78,15 @@ export function LoginClient({ next }: { next: string }) {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="login-password">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="login-password">Password</Label>
+              <Link
+                href="/forgot-password"
+                className="text-xs font-medium text-gray-500 hover:text-marigold-deep"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Input
               id="login-password"
               type="password"

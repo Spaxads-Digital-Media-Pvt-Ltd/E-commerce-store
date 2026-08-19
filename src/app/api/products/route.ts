@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getProducts } from "@/lib/queries";
-import { serverErrorResponse, zodErrorResponse } from "@/lib/api";
+import { getProducts } from "@/server/queries";
+import { serverErrorResponse, zodErrorResponse } from "@/server/api";
 
 // Every param is whitelist-validated before touching the DB (§13).
 const querySchema = z.object({

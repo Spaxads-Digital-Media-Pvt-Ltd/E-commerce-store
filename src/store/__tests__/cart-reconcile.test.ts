@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { reconcileCart } from "@/lib/cart-reconcile";
+import { reconcileCart } from "@/store/cart-reconcile";
 import type { CartItem, ProductDTO } from "@/types";
 
 const cartItem = (over: Partial<CartItem> = {}): CartItem => ({

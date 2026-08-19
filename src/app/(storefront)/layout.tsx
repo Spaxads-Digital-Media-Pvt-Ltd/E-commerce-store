@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { StickyCartBar } from "@/components/cart/sticky-cart-bar";
 import { CartDrawer } from "@/components/cart/cart-drawer";
-import { getSession } from "@/lib/auth/session";
+import { getSession } from "@/server/auth/session";
 
 export default async function StorefrontLayout({
   children,

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCategoryBySlug } from "@/lib/queries";
+import { getCategoryBySlug } from "@/server/queries";
 
 // Same 404-before-streaming guard as the product segment (see note there).
 export default async function CategorySlugLayout({

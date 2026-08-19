@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutGrid, ShoppingCart, User } from "lucide-react";
-import { selectCartCount, useCart } from "@/lib/cart-store";
+import { selectCartCount, useCart } from "@/store/cart-store";
 import { cn } from "@/lib/utils";
 
 const BASE_TABS = [

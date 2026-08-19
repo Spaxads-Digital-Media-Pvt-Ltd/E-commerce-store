@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCategories } from "@/lib/queries";
+import { getCategories } from "@/server/queries";
 import { CategoryGrid } from "@/components/home/category-grid";
 
 export const revalidate = 300;

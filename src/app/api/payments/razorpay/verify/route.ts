@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { apiError, serverErrorResponse, zodErrorResponse } from "@/lib/api";
-import { verifyPaymentSignature } from "@/lib/razorpay";
+import { db } from "@/server/db";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
+import { verifyPaymentSignature } from "@/server/razorpay";
 import { ORDER_STATUS, PAYMENT_STATUS } from "@/lib/constants";
-import { toOrderDTO } from "@/lib/serializers";
+import { toOrderDTO } from "@/server/serializers";
 
 // POST /api/payments/razorpay/verify — immediate post-checkout verification
 // (the webhook is the safety net for missed callbacks). The payment is only

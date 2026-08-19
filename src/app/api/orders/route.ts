@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
-import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth/session";
+import { db } from "@/server/db";
+import { getSession } from "@/server/auth/session";
 import { createOrderSchema } from "@/lib/validations/order";
 import { computeTotals } from "@/lib/pricing";
-import { generateOrderNumber } from "@/lib/order-number";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { verifyTurnstile } from "@/lib/turnstile";
-import { parseImages, toOrderDTO } from "@/lib/serializers";
-import { apiError, serverErrorResponse, zodErrorResponse } from "@/lib/api";
+import { generateOrderNumber } from "@/server/order-number";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { verifyTurnstile } from "@/server/turnstile";
+import { parseImages, toOrderDTO } from "@/server/serializers";
+import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
 import {
   MAX_QTY_PER_ITEM,
   ORDER_STATUS,
   PAYMENT_METHODS,
   PAYMENT_STATUS,
 } from "@/lib/constants";
-import { isRazorpayConfigured } from "@/lib/razorpay";
+import { isRazorpayConfigured } from "@/server/razorpay";
 
 // ────────────────────────────────────────────────────────────────────────
 // POST /api/orders — the money-integrity core (blueprint §10, §13).

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SearchX, Search } from "lucide-react";
-import { searchProducts } from "@/lib/queries";
+import { searchProducts } from "@/server/queries";
 import { ProductCard } from "@/components/product/product-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";

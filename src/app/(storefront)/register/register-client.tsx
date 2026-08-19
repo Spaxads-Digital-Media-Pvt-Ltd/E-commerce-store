@@ -36,8 +36,10 @@ export function RegisterClient({ next }: { next: string }) {
         setSubmitting(false);
         return;
       }
-      router.push(next);
-      router.refresh();
+      router.push(
+        `/verify-email?email=${encodeURIComponent(data.email ?? input.email)}&next=${encodeURIComponent(next)}`
+      );
+      setSubmitting(false);
     } catch {
       toast.error("Network error — check your connection and try again.");
       setSubmitting(false);

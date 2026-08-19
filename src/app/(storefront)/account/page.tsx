@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PackageSearch } from "lucide-react";
-import { db } from "@/lib/db";
-import { requireUser } from "@/lib/auth/session";
+import { db } from "@/server/db";
+import { requireUser } from "@/server/auth/session";
 import { ORDER_STATUS } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";

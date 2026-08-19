@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
-import { db } from "@/lib/db";
-import { requireUser } from "@/lib/auth/session";
-import { toOrderDTO } from "@/lib/serializers";
+import { db } from "@/server/db";
+import { requireUser } from "@/server/auth/session";
+import { toOrderDTO } from "@/server/serializers";
 import { OrderDetails } from "@/components/order/order-details";
 
 export const metadata: Metadata = {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import type { CartItem } from "@/types";
-import { useCart } from "@/lib/cart-store";
+import { useCart } from "@/store/cart-store";
 import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { QtyStepper } from "./qty-stepper";

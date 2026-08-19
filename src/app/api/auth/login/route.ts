@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db } from "@/server/db";
 import { loginSchema } from "@/lib/validations/auth";
-import { verifyPassword } from "@/lib/auth/password";
+import { verifyPassword } from "@/server/auth/password";
+import { createEmailOtp } from "@/server/auth/otp";
+import { sendOtpEmail } from "@/server/email";
 import {
   createSessionToken,
   sessionCookieOptions,
   SESSION_COOKIE,
-} from "@/lib/auth/session";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { apiError, serverErrorResponse, zodErrorResponse } from "@/lib/api";
-import { toUserDTO } from "@/lib/serializers";
+} from "@/server/auth/session";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
+import { toUserDTO } from "@/server/serializers";
 
 const INVALID_CREDENTIALS = "Invalid email or password.";
 
@@ -37,6 +39,15 @@ export async function POST(req: NextRequest) {
 
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) return apiError(INVALID_CREDENTIALS, 401);
+
+    if (!user.emailVerified) {
+      const code = await createEmailOtp(user.id);
+      await sendOtpEmail(user.email, code);
+      return NextResponse.json(
+        { requiresVerification: true, email: user.email },
+        { status: 403 }
+      );
+    }
 
     const res = NextResponse.json({ user: toUserDTO(user) }, { status: 200 });
     res.cookies.set(

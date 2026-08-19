@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateOrderNumber, ORDER_NUMBER_REGEX } from "@/lib/order-number";
+import { generateOrderNumber, ORDER_NUMBER_REGEX } from "@/server/order-number";
 
 describe("generateOrderNumber", () => {
   it("matches ORD-YYYYMMDD-XXXXX", () => {

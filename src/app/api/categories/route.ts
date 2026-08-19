@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCategories } from "@/lib/queries";
-import { serverErrorResponse } from "@/lib/api";
+import { getCategories } from "@/server/queries";
+import { serverErrorResponse } from "@/server/api";
 
 export async function GET() {
   try {

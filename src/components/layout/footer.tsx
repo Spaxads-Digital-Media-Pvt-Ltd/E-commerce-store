@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getCategories } from "@/lib/queries";
+import { getCategories } from "@/server/queries";
 import { STORE_NAME } from "@/lib/constants";
 import { LEGAL } from "@/lib/legal";
 

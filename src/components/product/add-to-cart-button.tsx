@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Plus, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import type { ProductDTO } from "@/types";
-import { useCart } from "@/lib/cart-store";
+import { useCart } from "@/store/cart-store";
 import { COPY, MAX_QTY_PER_ITEM } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 

@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LockKeyhole, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { addressSchema, type AddressInput } from "@/lib/validations/address";
-import { useCart } from "@/lib/cart-store";
+import { useCart } from "@/store/cart-store";
 import { computeTotals } from "@/lib/pricing";
 import {
   COPY,

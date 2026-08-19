@@ -6,7 +6,7 @@ import {
   getAllProductSlugs,
   getProductBySlug,
   getRelatedProducts,
-} from "@/lib/queries";
+} from "@/server/queries";
 import { COPY, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { shortCategoryName } from "@/components/category-icon";
 import { PriceTag } from "@/components/product/price-tag";

@@ -5,7 +5,7 @@ import {
   getCategories,
   getCategoryBySlug,
   getProducts,
-} from "@/lib/queries";
+} from "@/server/queries";
 import { PRICE_BANDS, RATING_FILTERS, SORT_OPTIONS } from "@/lib/constants";
 import type { PriceBandValue, SortValue } from "@/lib/constants";
 import { withParams } from "@/lib/utils";

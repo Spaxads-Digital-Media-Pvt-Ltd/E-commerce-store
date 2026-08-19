@@ -6,7 +6,7 @@ import {
   selectCartCount,
   selectCartSubtotal,
   useCart,
-} from "@/lib/cart-store";
+} from "@/store/cart-store";
 import { shippingFor } from "@/lib/pricing";
 import { formatINR } from "@/lib/utils";
 

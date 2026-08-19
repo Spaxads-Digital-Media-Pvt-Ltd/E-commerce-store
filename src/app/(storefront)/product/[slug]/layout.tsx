@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProductBySlug } from "@/lib/queries";
+import { getProductBySlug } from "@/server/queries";
 
 // Existence guard in the segment LAYOUT: layouts resolve before the
 // loading.tsx streaming boundary flushes, so unknown slugs get a real 404

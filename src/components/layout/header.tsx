@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PackageSearch, User } from "lucide-react";
 import { COPY, STORE_NAME } from "@/lib/constants";
-import { getSession } from "@/lib/auth/session";
+import { getSession } from "@/server/auth/session";
 import { SearchBox } from "./search-box";
 import { CartButton } from "./cart-button";
 

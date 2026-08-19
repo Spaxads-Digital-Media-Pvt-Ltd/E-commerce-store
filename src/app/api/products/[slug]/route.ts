@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getProductBySlug } from "@/lib/queries";
-import { apiError, serverErrorResponse } from "@/lib/api";
+import { getProductBySlug } from "@/server/queries";
+import { apiError, serverErrorResponse } from "@/server/api";
 
 const slugSchema = z.string().min(1).max(140);
 

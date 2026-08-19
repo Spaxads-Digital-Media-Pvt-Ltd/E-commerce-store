@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
-import { useCart } from "@/lib/cart-store";
+import { useCart } from "@/store/cart-store";
 import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 
 const product = (over: Partial<Parameters<typeof addToCart>[0]> = {}) => ({

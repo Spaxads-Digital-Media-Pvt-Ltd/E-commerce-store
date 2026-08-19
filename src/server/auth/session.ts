@@ -17,7 +17,7 @@ function secret(): string {
   return s;
 }
 
-function base64url(input: Buffer): string {
+export function base64url(input: Buffer): string {
   return input
     .toString("base64")
     .replace(/\+/g, "-")
@@ -26,8 +26,30 @@ function base64url(input: Buffer): string {
 }
 
 function sign(payload: string): string {
-  const sig = crypto.createHmac("sha256", secret()).update(payload).digest();
+  return signWithSecret(payload, secret());
+}
+
+// Shared HMAC signer — also used by reset-token.ts with the same
+// SESSION_SECRET but a distinct payload "purpose" so a session token can
+// never be replayed as a password-reset token or vice versa.
+export function signWithSecret(payload: string, key: string): string {
+  const sig = crypto.createHmac("sha256", key).update(payload).digest();
   return base64url(sig);
+}
+
+export function verifyWithSecret(
+  encoded: string,
+  sig: string,
+  key: string
+): boolean {
+  const expected = signWithSecret(encoded, key);
+  const a = Buffer.from(sig);
+  const b = Buffer.from(expected);
+  return a.length === b.length && crypto.timingSafeEqual(a, b);
+}
+
+export function sessionSecret(): string {
+  return secret();
 }
 
 export type SessionPayload = {

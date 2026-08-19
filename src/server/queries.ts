@@ -7,7 +7,7 @@ import {
   PRICE_BANDS,
   type PriceBandValue,
   type SortValue,
-} from "./constants";
+} from "@/lib/constants";
 import type { CategoryDTO, ProductDTO } from "@/types";
 
 // Shared data-access layer: server components AND API routes both call these,

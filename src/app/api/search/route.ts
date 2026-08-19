@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { searchProducts } from "@/lib/queries";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { apiError, serverErrorResponse, zodErrorResponse } from "@/lib/api";
+import { searchProducts } from "@/server/queries";
+import { clientIp, rateLimit } from "@/server/rate-limit";
+import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
 
 const querySchema = z.object({
   q: z.string().trim().min(1).max(80),

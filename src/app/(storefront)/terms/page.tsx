@@ -40,13 +40,15 @@ export default function TermsPage() {
         accurate, and complete.
       </p>
 
-      <h2>3. Guest checkout — no account needed</h2>
+      <h2>3. Your account</h2>
       <p>
-        We offer guest checkout. You do not need to create an account or a
-        password to shop with us. Your shopping cart is stored locally in your
-        own browser and is not shared with us until you place an order. You are
-        responsible for the accuracy of the contact and delivery details you
-        provide at checkout, as we use them to fulfil and deliver your order.
+        To place an order, you need to create an account with your email address
+        and a password, and verify your email. You are responsible for keeping
+        your login credentials confidential and for all activity that takes
+        place under your account. Please provide accurate, current, and complete
+        information and keep it up to date, as we use your contact and delivery
+        details to fulfil and deliver your orders. Notify us promptly at{" "}
+        {LEGAL.supportEmail} if you suspect any unauthorised use of your account.
       </p>
 
       <h2>4. Products, descriptions & the “Under ₹999” promise</h2>

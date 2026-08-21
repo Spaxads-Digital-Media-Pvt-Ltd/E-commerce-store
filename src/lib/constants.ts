@@ -8,6 +8,16 @@ export const PRICE_CAP = 999;
 export const FLAT_SHIPPING_FEE = 49;
 export const FREE_SHIPPING_THRESHOLD = 399;
 
+// GST breakup shown on the order/invoice. Per the client's sheet the GST slice
+// is a flat 18% OF THE TOTAL (not the standard total×18/118). It is EXTRACTED —
+// prices already include it, so showing it never changes what the customer
+// pays; it's a display/invoice breakup only.
+export const GST_RATE_PERCENT = 18;
+
+// Optional membership add-on the shopper can choose at checkout.
+export const MEMBERSHIP_FEE = 49;
+export const MEMBERSHIP_LABEL = "Priority Membership";
+
 // Cart guardrails
 export const MAX_QTY_PER_ITEM = 10;
 export const MAX_CART_LINES = 30;

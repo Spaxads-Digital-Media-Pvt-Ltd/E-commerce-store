@@ -105,6 +105,9 @@ model Order {
   pincode         String
   subtotal        Int // recomputed server-side, never client-supplied
   shippingFee     Int
+  discount        Int         @default(0) // coupon discount applied, in ₹
+  couponCode      String? // coupon code used at checkout, if any
+  membershipFee   Int         @default(0) // optional membership add-on, in ₹
   total           Int
   paymentMethod   String // COD | RAZORPAY
   paymentStatus   String // PENDING | PAID | FAILED

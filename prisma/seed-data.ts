@@ -620,7 +620,7 @@ export const PRODUCTS: SeedProduct[] = [
   {
     name: "Gel Pens Set (10 pcs)",
     slug: "gel-pens-set-10-pcs",
-    price: 149,
+    price: 99,
     mrp: 349,
     categorySlug: "stationery-office",
     description:
@@ -647,7 +647,7 @@ export const PRODUCTS: SeedProduct[] = [
   {
     name: "Sticky Notes & Stickers Combo",
     slug: "sticky-notes-stickers-combo",
-    price: 129,
+    price: 99,
     mrp: 299,
     categorySlug: "stationery-office",
     description:
@@ -696,7 +696,7 @@ export const PRODUCTS: SeedProduct[] = [
   {
     name: "Adjustable Skipping Rope",
     slug: "adjustable-skipping-rope",
-    price: 149,
+    price: 99,
     mrp: 349,
     categorySlug: "sports-fitness",
     description:

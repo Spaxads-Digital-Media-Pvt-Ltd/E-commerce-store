@@ -1,4 +1,5 @@
-import { computeTotals, type PricedLine } from "@/lib/pricing";
+import { computeTotals, type PricedLine, type Totals } from "@/lib/pricing";
+import { GST_RATE_PERCENT, MEMBERSHIP_LABEL } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -10,15 +11,24 @@ type NamedLine = PricedLine & { name?: string };
 export function OrderSummary({
   lines,
   totals,
+  discount = 0,
+  membershipFee = 0,
+  couponCode,
   showLines = false,
   className,
 }: {
   lines?: NamedLine[];
-  totals?: { subtotal: number; shippingFee: number; total: number };
+  totals?: Totals;
+  discount?: number;
+  membershipFee?: number;
+  couponCode?: string | null;
   showLines?: boolean;
   className?: string;
 }) {
-  const t = totals ?? computeTotals(lines ?? []);
+  const t = totals ?? computeTotals(lines ?? [], discount, membershipFee);
+  // GST breakup (extracted — the total is unchanged). Solution-1 view: the
+  // 18% slice is shown as a coupon amount; the remainder is the sale price.
+  const salePrice = t.total - t.gst;
 
   return (
     <div
@@ -53,6 +63,22 @@ export function OrderSummary({
           <dt className="text-gray-500">Subtotal</dt>
           <dd className="font-medium">{formatINR(t.subtotal)}</dd>
         </div>
+        {t.discount > 0 ? (
+          <div className="flex justify-between">
+            <dt className="text-mehendi">
+              Coupon{couponCode ? ` (${couponCode})` : ""}
+            </dt>
+            <dd className="font-semibold text-mehendi">
+              −{formatINR(t.discount)}
+            </dd>
+          </div>
+        ) : null}
+        {t.membershipFee > 0 ? (
+          <div className="flex justify-between">
+            <dt className="text-gray-500">{MEMBERSHIP_LABEL}</dt>
+            <dd className="font-medium">{formatINR(t.membershipFee)}</dd>
+          </div>
+        ) : null}
         <div className="flex justify-between">
           <dt className="text-gray-500">Delivery</dt>
           <dd
@@ -71,6 +97,23 @@ export function OrderSummary({
           </dd>
         </div>
       </dl>
+
+      {/* GST / coupon breakup — extracted from the total (total unchanged). */}
+      {t.total > 0 ? (
+        <div className="mt-3 space-y-1 rounded-xl bg-canvas-alt px-3 py-2.5 text-xs text-gray-500">
+          <p className="font-semibold text-ink/70">
+            Price breakup (included in total)
+          </p>
+          <div className="flex justify-between">
+            <span>Sale price</span>
+            <span className="font-medium">{formatINR(salePrice)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Coupon ({GST_RATE_PERCENT}%)</span>
+            <span className="font-medium text-mehendi">{formatINR(t.gst)}</span>
+          </div>
+        </div>
+      ) : null}
       <p className="mt-2 text-xs text-gray-500">Inclusive of all taxes</p>
     </div>
   );

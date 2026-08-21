@@ -43,8 +43,44 @@ describe("computeTotals", () => {
     expect(computeTotals([])).toEqual({
       subtotal: 0,
       shippingFee: 0,
+      discount: 0,
+      membershipFee: 0,
       total: 0,
+      gst: 0,
     });
+  });
+
+  it("adds the optional membership fee to the total", () => {
+    const t = computeTotals([{ price: 99, qty: 1 }], 0, 49);
+    expect(t.membershipFee).toBe(49);
+    expect(t.total).toBe(99 + 49 /* ship */ + 49 /* membership */); // 197
+  });
+
+  it("shows GST as 18% of the total without changing the total", () => {
+    const t = computeTotals([{ price: 82, qty: 1 }]); // 82 + 49 ship = 131
+    expect(t.total).toBe(131);
+    expect(t.gst).toBe(Math.round(131 * 0.18)); // 24
+  });
+
+  it("applies a coupon discount off the subtotal (₹48 → ₹100)", () => {
+    // subtotal 99 + shipping 49 = 148, minus 48 coupon = 100
+    const t = computeTotals([{ price: 99, qty: 1 }], 48);
+    expect(t.subtotal).toBe(99);
+    expect(t.shippingFee).toBe(FLAT_SHIPPING_FEE);
+    expect(t.discount).toBe(48);
+    expect(t.total).toBe(100);
+  });
+
+  it("caps the discount at the subtotal so merchandise never goes negative", () => {
+    const t = computeTotals([{ price: 30, qty: 1 }], 48); // discount capped at 30
+    expect(t.discount).toBe(30);
+    expect(t.total).toBe(30 - 30 + FLAT_SHIPPING_FEE); // just shipping
+  });
+
+  it("keeps free-shipping eligibility based on the original subtotal", () => {
+    const t = computeTotals([{ price: 500, qty: 1 }], 48); // 500 ≥ 399 → free ship
+    expect(t.shippingFee).toBe(0);
+    expect(t.total).toBe(500 - 48);
   });
 });
 

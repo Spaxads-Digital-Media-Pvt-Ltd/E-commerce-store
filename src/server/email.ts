@@ -17,7 +17,7 @@ function getClient(): Resend {
 }
 
 const FROM =
-  process.env.RESEND_FROM_EMAIL ?? `${STORE_NAME} <onboarding@resend.dev>`;
+  process.env.RESEND_FROM_EMAIL ?? `${STORE_NAME} <no-reply@naidoolife.com>`;
 
 async function send(
   to: string,

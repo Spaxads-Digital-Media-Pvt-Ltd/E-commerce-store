@@ -11,11 +11,13 @@ import { parseImages, toOrderDTO } from "@/server/serializers";
 import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
 import {
   MAX_QTY_PER_ITEM,
+  MEMBERSHIP_FEE,
   ORDER_STATUS,
   PAYMENT_METHODS,
   PAYMENT_STATUS,
 } from "@/lib/constants";
 import { isRazorpayConfigured } from "@/server/razorpay";
+import { evaluateCoupon } from "@/server/coupons";
 
 // ────────────────────────────────────────────────────────────────────────
 // POST /api/orders — the money-integrity core (blueprint §10, §13).
@@ -151,8 +153,30 @@ export async function POST(req: NextRequest) {
       qty,
       stock: product.stock,
     }));
+    // Coupon: re-validated server-side against the DB subtotal. The client
+    // only sends the code; the discount is computed here, never trusted (§13).
+    const subtotalForCoupon = available.reduce(
+      (s, a) => s + a.product.price * a.qty,
+      0
+    );
+    let discount = 0;
+    let appliedCouponCode: string | null = null;
+    let couponError: string | null = null;
+    if (input.couponCode) {
+      const result = evaluateCoupon(input.couponCode, subtotalForCoupon);
+      if (result.ok) {
+        discount = result.discount;
+        appliedCouponCode = result.coupon.code;
+      } else {
+        couponError = result.error;
+      }
+    }
+
+    const membershipFee = input.membership ? MEMBERSHIP_FEE : 0;
     const totals = computeTotals(
-      available.map((a) => ({ price: a.product.price, qty: a.qty }))
+      available.map((a) => ({ price: a.product.price, qty: a.qty })),
+      discount,
+      membershipFee
     );
 
     const qtyChanged = available.some(
@@ -162,15 +186,18 @@ export async function POST(req: NextRequest) {
       typeof input.expectedTotal === "number" &&
       input.expectedTotal !== totals.total;
 
-    // Never silently charge a different amount than what was shown (§10).
-    if (removedNames.length > 0 || qtyChanged || totalDrifted) {
+    // Never silently charge a different amount than what was shown (§10), and
+    // surface an invalid/expired coupon instead of dropping it silently.
+    if (removedNames.length > 0 || qtyChanged || totalDrifted || couponError) {
       return NextResponse.json(
         {
           error:
+            couponError ??
             "Some items in your cart changed — we've updated it. Please review and place the order again.",
           cart: correctedCart,
           removed: removedNames,
           totals,
+          couponInvalid: Boolean(couponError),
         },
         { status: 409 }
       );
@@ -212,6 +239,9 @@ export async function POST(req: NextRequest) {
               pincode: input.customer.pincode,
               subtotal: totals.subtotal,
               shippingFee: totals.shippingFee,
+              discount: totals.discount,
+              couponCode: appliedCouponCode,
+              membershipFee: totals.membershipFee,
               total: totals.total,
               paymentMethod: input.paymentMethod,
               paymentStatus: PAYMENT_STATUS.PENDING,

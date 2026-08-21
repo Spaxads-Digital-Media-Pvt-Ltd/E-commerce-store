@@ -55,6 +55,9 @@ export type OrderDTO = {
   pincode: string;
   subtotal: number;
   shippingFee: number;
+  discount: number;
+  couponCode?: string | null;
+  membershipFee: number;
   total: number;
   paymentMethod: string;
   paymentStatus: string;

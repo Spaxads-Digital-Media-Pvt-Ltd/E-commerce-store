@@ -18,6 +18,12 @@ export const createOrderSchema = z.object({
     .max(MAX_CART_LINES),
   customer: addressSchema,
   paymentMethod: paymentMethodSchema,
+  // Optional coupon code. Re-validated and applied server-side — the client
+  // never sends the discount amount, only the code.
+  couponCode: z.string().trim().max(40).optional(),
+  // Optional membership add-on. The fee is set server-side from constants —
+  // the client only signals whether it was chosen.
+  membership: z.boolean().optional(),
   // Idempotency: a double-tap or retry-on-timeout returns the SAME order.
   idempotencyKey: z.string().uuid(),
   // What the client DISPLAYED as the total. Used only to detect a price

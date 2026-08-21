@@ -21,8 +21,30 @@ describe("<OrderSummary />", () => {
 
   it("renders server-computed totals verbatim when passed explicitly", () => {
     render(
-      <OrderSummary totals={{ subtotal: 298, shippingFee: 49, total: 347 }} />
+      <OrderSummary
+        totals={{
+          subtotal: 298,
+          shippingFee: 49,
+          discount: 0,
+          membershipFee: 0,
+          total: 347,
+          gst: 62,
+        }}
+      />
     );
     expect(screen.getByText("₹347")).toBeDefined();
+  });
+
+  it("shows the coupon discount line when a coupon is applied", () => {
+    render(
+      <OrderSummary
+        lines={[{ name: "Kurti", price: 99, qty: 1 }]}
+        discount={48}
+        couponCode="SAVE48"
+      />
+    );
+    expect(screen.getByText(/SAVE48/)).toBeDefined();
+    expect(screen.getByText("−₹48")).toBeDefined();
+    expect(screen.getByText("₹100")).toBeDefined(); // 99 + 49 − 48
   });
 });

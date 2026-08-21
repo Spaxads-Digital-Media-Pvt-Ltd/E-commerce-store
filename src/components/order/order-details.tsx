@@ -6,6 +6,7 @@ import { Check, CircleAlert, MapPin, Phone } from "lucide-react";
 import type { OrderDTO } from "@/types";
 import { ORDER_STATUS, PAYMENT_METHODS, PAYMENT_STATUS } from "@/lib/constants";
 import { cn, formatINR } from "@/lib/utils";
+import { gstFromTotal } from "@/lib/pricing";
 import { Badge } from "@/components/ui/badge";
 import { OrderSummary } from "@/components/checkout/order-summary";
 
@@ -194,8 +195,12 @@ export function OrderDetails({ order }: { order: OrderDTO }) {
           totals={{
             subtotal: order.subtotal,
             shippingFee: order.shippingFee,
+            discount: order.discount,
+            membershipFee: order.membershipFee,
             total: order.total,
+            gst: gstFromTotal(order.total),
           }}
+          couponCode={order.couponCode}
         />
       </div>
     </div>

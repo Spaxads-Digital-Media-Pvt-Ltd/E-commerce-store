@@ -13,6 +13,8 @@ import { computeTotals } from "@/lib/pricing";
 import {
   COPY,
   INDIAN_STATES,
+  MEMBERSHIP_FEE,
+  MEMBERSHIP_LABEL,
   PAYMENT_METHODS,
   type PaymentMethod,
 } from "@/lib/constants";
@@ -108,6 +110,13 @@ export function CheckoutClient({
   const [honeypot, setHoneypot] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [placed, setPlaced] = React.useState(false);
+  // Coupon state — the discount is confirmed server-side; this is display-only.
+  const [couponInput, setCouponInput] = React.useState("");
+  const [couponCode, setCouponCode] = React.useState<string | null>(null);
+  const [couponDiscount, setCouponDiscount] = React.useState(0);
+  const [couponError, setCouponError] = React.useState<string | null>(null);
+  const [couponLoading, setCouponLoading] = React.useState(false);
+  const [membership, setMembership] = React.useState(false);
   // One idempotency key per checkout session: a double-tap or a
   // retry-on-timeout returns the SAME order server-side (§13).
   const idempotencyKey = React.useRef<string>(
@@ -131,8 +140,58 @@ export function CheckoutClient({
   });
 
   const totals = computeTotals(
-    items.map((i) => ({ price: i.price, qty: i.qty }))
+    items.map((i) => ({ price: i.price, qty: i.qty })),
+    couponDiscount,
+    membership ? MEMBERSHIP_FEE : 0
   );
+
+  async function applyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    const cartItems = useCart.getState().items;
+    if (cartItems.length === 0) {
+      setCouponError("Add items to your cart first.");
+      return;
+    }
+    setCouponLoading(true);
+    setCouponError(null);
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          code,
+          items: cartItems.map((i) => ({ productId: i.productId, qty: i.qty })),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.valid) {
+        setCouponCode(data.code as string);
+        setCouponDiscount(data.discount as number);
+        setCouponInput(data.code as string);
+        toast.success(`Coupon applied — ${formatINR(data.discount)} off`);
+      } else {
+        setCouponCode(null);
+        setCouponDiscount(0);
+        setCouponError(
+          typeof data.error === "string"
+            ? data.error
+            : "This coupon code isn't valid."
+        );
+      }
+    } catch {
+      setCouponError("Couldn't check the coupon — please try again.");
+    } finally {
+      setCouponLoading(false);
+    }
+  }
+
+  function removeCoupon() {
+    setCouponCode(null);
+    setCouponDiscount(0);
+    setCouponInput("");
+    setCouponError(null);
+  }
 
   function finishSuccess(order: OrderDTO) {
     try {
@@ -233,10 +292,14 @@ export function CheckoutClient({
           })),
           customer,
           paymentMethod,
+          couponCode: couponCode ?? undefined,
+          membership: membership || undefined,
           idempotencyKey: idempotencyKey.current,
           // display-honesty check only; never used for charging
           expectedTotal: computeTotals(
-            cartItems.map((i) => ({ price: i.price, qty: i.qty }))
+            cartItems.map((i) => ({ price: i.price, qty: i.qty })),
+            couponDiscount,
+            membership ? MEMBERSHIP_FEE : 0
           ).total,
           turnstileToken: turnstileToken ?? undefined,
           website: honeypot || undefined,
@@ -261,6 +324,15 @@ export function CheckoutClient({
 
       if (res.status === 409 && Array.isArray(data.cart)) {
         useCart.getState().replaceItems(data.cart as CartItem[]);
+        if (data.couponInvalid) {
+          setCouponCode(null);
+          setCouponDiscount(0);
+          setCouponError(
+            typeof data.error === "string"
+              ? data.error
+              : "Coupon could not be applied."
+          );
+        }
         toast.warning(
           data.error ?? "Your cart was updated — please review it."
         );
@@ -508,12 +580,95 @@ export function CheckoutClient({
         </div>
 
         <div className="mt-6 lg:sticky lg:top-32 lg:mt-0">
+          <div className="mb-4 rounded-2xl border border-gray-200 p-4">
+            <p className="text-sm font-semibold text-ink">Have a coupon?</p>
+            {couponCode ? (
+              <div className="mt-2 flex items-center justify-between gap-2 rounded-xl bg-mehendi/10 px-3 py-2">
+                <span className="text-sm font-medium text-mehendi">
+                  {couponCode} applied · {formatINR(couponDiscount)} off
+                </span>
+                <button
+                  type="button"
+                  onClick={removeCoupon}
+                  className="text-xs font-semibold text-gray-500 hover:text-sindoor"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="mt-2 flex gap-2">
+                <label htmlFor="coupon" className="sr-only">
+                  Coupon code
+                </label>
+                <Input
+                  id="coupon"
+                  value={couponInput}
+                  onChange={(e) => {
+                    setCouponInput(e.target.value.toUpperCase());
+                    setCouponError(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      applyCoupon();
+                    }
+                  }}
+                  placeholder="Enter code"
+                  autoComplete="off"
+                  autoCapitalize="characters"
+                  className="uppercase"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={applyCoupon}
+                  disabled={couponLoading || !couponInput.trim()}
+                >
+                  {couponLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "Apply"
+                  )}
+                </Button>
+              </div>
+            )}
+            {couponError ? (
+              <p role="alert" className="mt-1.5 text-xs font-medium text-sindoor">
+                {couponError}
+              </p>
+            ) : null}
+          </div>
+
+          <label className="mb-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-200 p-4 transition-colors hover:border-gray-300">
+            <input
+              type="checkbox"
+              checked={membership}
+              onChange={(e) => setMembership(e.target.checked)}
+              className="mt-0.5 size-4.5 shrink-0 accent-marigold-deep"
+            />
+            <div className="flex-1">
+              <p className="flex items-center justify-between gap-2 font-semibold text-ink">
+                <span>Add {MEMBERSHIP_LABEL}</span>
+                <span className="text-marigold-deep">
+                  +{formatINR(MEMBERSHIP_FEE)}
+                </span>
+              </p>
+              <p className="mt-0.5 text-sm text-gray-500">
+                Optional — faster support and early access to deals. You can skip
+                it.
+              </p>
+            </div>
+          </label>
+
           <OrderSummary
             lines={items.map((i) => ({
               name: i.name,
               price: i.price,
               qty: i.qty,
             }))}
+            discount={couponDiscount}
+            membershipFee={membership ? MEMBERSHIP_FEE : 0}
+            couponCode={couponCode}
             showLines
           />
           <Button

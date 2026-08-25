@@ -109,13 +109,16 @@ model Order {
   couponCode      String? // coupon code used at checkout, if any
   membershipFee   Int         @default(0) // optional membership add-on, in ₹
   total           Int
-  paymentMethod   String // COD | RAZORPAY
+  paymentMethod   String // COD | RAZORPAY | PAYU | SPRINTPGX
   paymentStatus   String // PENDING | PAID | FAILED
   status          String // PENDING_PAYMENT | PLACED | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
   razorpayOrderId String?     @unique
   idempotencyKey  String?     @unique
-  // Pre-existing column in the live DB, not written by this codebase.
-  // Kept (not managed) so schema pushes don't drop real data in it.
+  // Pre-existing column in the live DB (this store used SprintPGX before
+  // Razorpay). Now written by src/server/sprintpgx.ts on checkout creation —
+  // see that file's header comment for what's confirmed vs. still unknown
+  // about the SprintPGX API (there's no verified way yet to mark an order
+  // PAID from this gateway, only to record the transaction id).
   sprintpgxTransactionId String? @unique
   items           OrderItem[]
   createdAt       DateTime    @default(now())

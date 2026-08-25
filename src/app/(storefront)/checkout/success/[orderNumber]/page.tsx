@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SuccessClient } from "./success-client";
 
 export const metadata: Metadata = {
@@ -15,5 +16,9 @@ export default async function OrderSuccessPage({
   params: Promise<{ orderNumber: string }>;
 }) {
   const { orderNumber } = await params;
-  return <SuccessClient orderNumber={orderNumber} />;
+  return (
+    <Suspense fallback={null}>
+      <SuccessClient orderNumber={orderNumber} />
+    </Suspense>
+  );
 }

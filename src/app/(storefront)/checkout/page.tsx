@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CheckoutClient } from "@/components/checkout/checkout-client";
-import { isRazorpayConfigured } from "@/server/razorpay";
+import { isPayUConfigured } from "@/server/payu";
 import { requireUser } from "@/server/auth/session";
 import { db } from "@/server/db";
 
@@ -15,14 +15,15 @@ export default async function CheckoutPage() {
     where: { id: session.userId },
   });
 
-  // "Pay Online" is offered only when both the server keys and the public
-  // key are configured; otherwise COD remains the sole (fully working) path.
-  const razorpayEnabled =
-    isRazorpayConfigured() && Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
+  // Razorpay and SprintPGX are built (see src/server/razorpay.ts and
+  // src/server/sprintpgx.ts) but intentionally hidden from checkout for
+  // now — PayU is the only online method shown. COD always remains the
+  // fully-working fallback.
+  const payuEnabled = isPayUConfigured();
 
   return (
     <CheckoutClient
-      razorpayEnabled={razorpayEnabled}
+      payuEnabled={payuEnabled}
       defaultName={user.name}
       defaultEmail={user.email}
     />

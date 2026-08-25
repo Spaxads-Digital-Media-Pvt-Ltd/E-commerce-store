@@ -7,15 +7,59 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // COD is the default/primary method for a guest checkout in India (§1);
-// "Pay Online" is offered when Razorpay (test mode) is configured.
+// each online gateway is offered only when it's configured server-side.
+function OnlineOption({
+  id,
+  value,
+  selected,
+  enabled,
+  label,
+  description,
+  badge,
+}: {
+  id: string;
+  value: PaymentMethod;
+  selected: boolean;
+  enabled: boolean;
+  label: string;
+  description: string;
+  badge?: string;
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className={cn(
+        "flex items-start gap-3 rounded-2xl border p-4 transition-colors",
+        !enabled
+          ? "cursor-not-allowed opacity-60"
+          : selected
+            ? "cursor-pointer border-marigold bg-marigold/5"
+            : "cursor-pointer border-gray-200 hover:border-gray-300"
+      )}
+    >
+      <RadioGroupItem id={id} value={value} disabled={!enabled} className="mt-0.5" />
+      <div className="flex-1">
+        <p className="flex items-center gap-2 font-semibold text-ink">
+          <CreditCard className="size-4 text-marigold-deep" aria-hidden />
+          {label}
+          {enabled && badge ? <Badge variant="outline">{badge}</Badge> : null}
+        </p>
+        <p className="mt-0.5 text-sm text-gray-500">
+          {enabled ? description : "Currently unavailable — Cash on Delivery works!"}
+        </p>
+      </div>
+    </label>
+  );
+}
+
 export function PaymentMethodSelector({
   value,
   onChange,
-  razorpayEnabled,
+  payuEnabled,
 }: {
   value: PaymentMethod;
   onChange: (method: PaymentMethod) => void;
-  razorpayEnabled: boolean;
+  payuEnabled: boolean;
 }) {
   return (
     <RadioGroup
@@ -46,38 +90,14 @@ export function PaymentMethodSelector({
         </div>
       </label>
 
-      <label
-        htmlFor="pay-online"
-        className={cn(
-          "flex items-start gap-3 rounded-2xl border p-4 transition-colors",
-          !razorpayEnabled
-            ? "cursor-not-allowed opacity-60"
-            : value === "RAZORPAY"
-              ? "cursor-pointer border-marigold bg-marigold/5"
-              : "cursor-pointer border-gray-200 hover:border-gray-300"
-        )}
-      >
-        <RadioGroupItem
-          id="pay-online"
-          value="RAZORPAY"
-          disabled={!razorpayEnabled}
-          className="mt-0.5"
-        />
-        <div className="flex-1">
-          <p className="flex items-center gap-2 font-semibold text-ink">
-            <CreditCard className="size-4 text-marigold-deep" aria-hidden />
-            Pay Online
-            {razorpayEnabled ? (
-              <Badge variant="outline">Test mode</Badge>
-            ) : null}
-          </p>
-          <p className="mt-0.5 text-sm text-gray-500">
-            {razorpayEnabled
-              ? "UPI, cards or netbanking — secure checkout via Razorpay."
-              : "Currently unavailable — Cash on Delivery works!"}
-          </p>
-        </div>
-      </label>
+      <OnlineOption
+        id="pay-payu"
+        value="PAYU"
+        selected={value === "PAYU"}
+        enabled={payuEnabled}
+        label="Pay Online"
+        description="UPI, cards or netbanking — secure checkout via PayU."
+      />
     </RadioGroup>
   );
 }

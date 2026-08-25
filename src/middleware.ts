@@ -4,10 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 // API requests must be same-origin. Browsers always attach Origin to
 // cross-site POSTs, so a mismatched or missing Origin/Referer is rejected.
 //
-// The Razorpay webhook is exempt — it's a server-to-server call that is
-// authenticated by its HMAC signature instead.
+// The Razorpay webhook and the PayU callback are exempt — both are
+// authenticated by their own signature/hash instead of same-origin (the
+// PayU callback is a browser POST originating from PayU's hosted page, so
+// it's cross-origin by design; see src/server/payu.ts).
 
-const SIGNATURE_AUTHENTICATED = ["/api/payments/razorpay/webhook"];
+const SIGNATURE_AUTHENTICATED = [
+  "/api/payments/razorpay/webhook",
+  "/api/payments/payu/callback",
+];
 
 function blocked() {
   return NextResponse.json(

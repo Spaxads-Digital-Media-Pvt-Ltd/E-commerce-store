@@ -25,6 +25,8 @@ export const MAX_CART_LINES = 30;
 export const PAYMENT_METHODS = {
   COD: "COD",
   RAZORPAY: "RAZORPAY",
+  PAYU: "PAYU",
+  SPRINTPGX: "SPRINTPGX",
 } as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];
 

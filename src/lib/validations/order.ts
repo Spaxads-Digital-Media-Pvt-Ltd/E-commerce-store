@@ -9,7 +9,12 @@ export const orderItemInputSchema = z.object({
   qty: z.number().int().min(1).max(MAX_QTY_PER_ITEM),
 });
 
-export const paymentMethodSchema = z.enum(["COD", "RAZORPAY"]);
+export const paymentMethodSchema = z.enum([
+  "COD",
+  "RAZORPAY",
+  "PAYU",
+  "SPRINTPGX",
+]);
 
 export const createOrderSchema = z.object({
   items: z

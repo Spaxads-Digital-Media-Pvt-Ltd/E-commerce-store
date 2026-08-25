@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle2, PackageSearch, Truck } from "lucide-react";
 import type { OrderDTO } from "@/types";
 import { useCart } from "@/store/cart-store";
@@ -18,6 +19,14 @@ export function SuccessClient({ orderNumber }: { orderNumber: string }) {
   const [order, setOrder] = React.useState<OrderDTO | null | undefined>(
     undefined
   );
+  // PayU/SprintPGX redirect the whole browser away and back, so the
+  // sessionStorage snapshot below is taken BEFORE payment completes and is
+  // stale on paymentStatus. Their callback route appends the fresh,
+  // server-decided outcome as ?paid=1|0 on the redirect so this page can
+  // show the right message without trusting the query param for anything
+  // beyond that cosmetic line — order details still only ever come from the
+  // sessionStorage snapshot (see the IDOR note on the page component).
+  const paidParam = useSearchParams().get("paid");
 
   React.useEffect(() => {
     try {
@@ -69,6 +78,16 @@ export function SuccessClient({ orderNumber }: { orderNumber: string }) {
   }
 
   const isCod = order.paymentMethod === PAYMENT_METHODS.COD;
+  // ?paid= (set only by the PayU callback route) overrides the stale
+  // pre-payment snapshot; falls back to the snapshot for COD/Razorpay flows
+  // where it's already fresh.
+  const isPaid =
+    paidParam === "1"
+      ? true
+      : paidParam === "0"
+        ? false
+        : order.paymentStatus === PAYMENT_STATUS.PAID;
+  const paymentFailed = !isCod && paidParam === "0";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -99,9 +118,14 @@ export function SuccessClient({ orderNumber }: { orderNumber: string }) {
             Keep <strong className="text-ink">{formatINR(order.total)}</strong>{" "}
             ready — you'll pay the delivery partner in cash.
           </p>
-        ) : order.paymentStatus === PAYMENT_STATUS.PAID ? (
+        ) : isPaid ? (
           <p className="mt-3 text-sm font-medium text-mehendi">
             Payment received — nothing to pay on delivery.
+          </p>
+        ) : paymentFailed ? (
+          <p className="mt-3 text-sm font-medium text-sindoor">
+            Payment didn't go through. Track this order to retry, or contact
+            support if money was deducted.
           </p>
         ) : null}
 

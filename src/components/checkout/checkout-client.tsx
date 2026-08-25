@@ -89,11 +89,11 @@ function Field({
 }
 
 export function CheckoutClient({
-  razorpayEnabled,
+  payuEnabled,
   defaultName,
   defaultEmail,
 }: {
-  razorpayEnabled: boolean;
+  payuEnabled: boolean;
   defaultName?: string;
   defaultEmail?: string;
 }) {
@@ -117,13 +117,25 @@ export function CheckoutClient({
   const [couponError, setCouponError] = React.useState<string | null>(null);
   const [couponLoading, setCouponLoading] = React.useState(false);
   const [membership, setMembership] = React.useState(false);
-  // One idempotency key per checkout session: a double-tap or a
-  // retry-on-timeout returns the SAME order server-side (§13).
-  const idempotencyKey = React.useRef<string>(
-    typeof crypto !== "undefined" && "randomUUID" in crypto
+  // One idempotency key per checkout ATTEMPT: a double-tap or a
+  // retry-on-timeout with the SAME payment method returns the SAME order
+  // server-side (§13). It must be regenerated when the payment method
+  // changes, though — otherwise /api/orders' idempotent replay hands back
+  // the order created under the OLD method (e.g. a failed SprintPGX attempt
+  // left a PENDING order behind; switching to PayU and submitting again
+  // would silently resume that SprintPGX order instead of starting a PayU
+  // one, since the key alone decides which row comes back).
+  function generateIdempotencyKey(): string {
+    return typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random()}`.padEnd(36, "0")
-  );
+      : `${Date.now()}-${Math.random()}`.padEnd(36, "0");
+  }
+  const idempotencyKey = React.useRef<string>(generateIdempotencyKey());
+
+  function handlePaymentMethodChange(method: PaymentMethod) {
+    idempotencyKey.current = generateIdempotencyKey();
+    setPaymentMethod(method);
+  }
 
   const {
     register,
@@ -273,6 +285,94 @@ export function CheckoutClient({
     rzp.open();
   }
 
+  // PayU and SprintPGX both redirect the whole browser away to the
+  // gateway's hosted page rather than opening an in-page modal like
+  // Razorpay, so there's no client-side callback to hand a fresh order back
+  // to finishSuccess() when the customer returns. Snapshot what we know now
+  // (still PENDING) so the success page has something to render; the actual
+  // paid/failed outcome is decided server-side by each gateway's own
+  // callback route before the browser lands back on that page.
+  function snapshotPendingOrder(order: OrderDTO) {
+    try {
+      sessionStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
+    } catch {
+      // storage full/blocked — success page falls back to track-order
+    }
+  }
+
+  async function startPayUPayment(order: OrderDTO) {
+    const res = await fetch("/api/payments/payu/create-order", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        orderNumber: order.orderNumber,
+        phone: order.phone,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      toast.error(
+        data.error ??
+          "Couldn't start the online payment — you can place the order again with Cash on Delivery."
+      );
+      setSubmitting(false);
+      return;
+    }
+
+    snapshotPendingOrder(order);
+
+    // PayU's merchant-hosted flow is a plain HTML form POST to their
+    // action URL — build one and submit it to navigate the browser there.
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = data.action;
+    const fieldNames = [
+      "key",
+      "txnid",
+      "amount",
+      "productinfo",
+      "firstname",
+      "email",
+      "phone",
+      "surl",
+      "furl",
+      "hash",
+      "service_provider",
+    ] as const;
+    for (const name of fieldNames) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = String(data[name] ?? "");
+      form.appendChild(input);
+    }
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  async function startSprintPGXPayment(order: OrderDTO) {
+    const res = await fetch("/api/payments/sprintpgx/create-checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        orderNumber: order.orderNumber,
+        phone: order.phone,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.checkoutUrl) {
+      toast.error(
+        data.error ??
+          "Couldn't start the online payment — you can place the order again with Cash on Delivery."
+      );
+      setSubmitting(false);
+      return;
+    }
+
+    snapshotPendingOrder(order);
+    window.location.href = data.checkoutUrl as string;
+  }
+
   const onSubmit = handleSubmit(async (customer) => {
     const cartItems = useCart.getState().items;
     if (cartItems.length === 0) {
@@ -311,14 +411,21 @@ export function CheckoutClient({
         const order = data.order as OrderDTO;
         // Route by the ORDER's method — an idempotent replay may return an
         // earlier pending online-payment order.
-        if (
-          order.paymentMethod === PAYMENT_METHODS.RAZORPAY &&
-          order.paymentStatus !== "PAID"
-        ) {
-          await startRazorpayPayment(order);
-        } else {
-          finishSuccess(order);
+        if (order.paymentStatus !== "PAID") {
+          if (order.paymentMethod === PAYMENT_METHODS.RAZORPAY) {
+            await startRazorpayPayment(order);
+            return;
+          }
+          if (order.paymentMethod === PAYMENT_METHODS.PAYU) {
+            await startPayUPayment(order);
+            return;
+          }
+          if (order.paymentMethod === PAYMENT_METHODS.SPRINTPGX) {
+            await startSprintPGXPayment(order);
+            return;
+          }
         }
+        finishSuccess(order);
         return;
       }
 
@@ -553,8 +660,8 @@ export function CheckoutClient({
             <div className="mt-4">
               <PaymentMethodSelector
                 value={paymentMethod}
-                onChange={setPaymentMethod}
-                razorpayEnabled={razorpayEnabled}
+                onChange={handlePaymentMethodChange}
+                payuEnabled={payuEnabled}
               />
             </div>
           </section>

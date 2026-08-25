@@ -17,6 +17,8 @@ import {
   PAYMENT_STATUS,
 } from "@/lib/constants";
 import { isRazorpayConfigured } from "@/server/razorpay";
+import { isPayUConfigured } from "@/server/payu";
+import { isSprintPGXConfigured } from "@/server/sprintpgx";
 import { evaluateCoupon } from "@/server/coupons";
 
 // ────────────────────────────────────────────────────────────────────────
@@ -88,10 +90,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (
-      input.paymentMethod === PAYMENT_METHODS.RAZORPAY &&
-      !isRazorpayConfigured()
-    ) {
+    const onlineMethodConfigured: Record<string, () => boolean> = {
+      [PAYMENT_METHODS.RAZORPAY]: isRazorpayConfigured,
+      [PAYMENT_METHODS.PAYU]: isPayUConfigured,
+      [PAYMENT_METHODS.SPRINTPGX]: isSprintPGXConfigured,
+    };
+    const isConfiguredCheck = onlineMethodConfigured[input.paymentMethod];
+    if (isConfiguredCheck && !isConfiguredCheck()) {
       return apiError(
         "Online payment is currently unavailable — please use Cash on Delivery.",
         400

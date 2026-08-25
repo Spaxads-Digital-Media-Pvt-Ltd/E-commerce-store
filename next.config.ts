@@ -36,7 +36,13 @@ const csp = [
   "frame-src https://api.razorpay.com https://checkout.razorpay.com https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  // 'self' for our own <form> posts; PayU's merchant-hosted checkout is a
+  // real cross-origin form POST that redirects through PayU's own
+  // subdomains (checkout, bank pages, etc.) before landing back on our
+  // callback — Chrome enforces form-action on those redirect hops too, so
+  // the whole payu.in domain is allowlisted rather than one exact subdomain.
+  // See src/components/checkout/checkout-client.tsx.
+  "form-action 'self' https://*.payu.in",
   "object-src 'none'",
 ].join("; ");
 

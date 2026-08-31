@@ -1,6 +1,9 @@
 export const STORE_NAME = "Under ₹999";
 export const STORE_TAGLINE = "Everything Under ₹999";
 
+// Flip to true to require OTP email verification on signup / login.
+export const REQUIRE_EMAIL_VERIFICATION = true;
+
 // Hard catalog rule: no product may be priced above this.
 export const PRICE_CAP = 999;
 

@@ -10,6 +10,16 @@ import { gstFromTotal } from "@/lib/pricing";
 import { Badge } from "@/components/ui/badge";
 import { OrderSummary } from "@/components/checkout/order-summary";
 
+// Labels for every method this codebase has ever created orders with,
+// including ones no longer offered at checkout (e.g. legacy MANPAY rows) —
+// old orders must still render a sensible label, not fall through to a
+// wrong or missing one.
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  [PAYMENT_METHODS.RAZORPAY]: "Online (Razorpay)",
+  [PAYMENT_METHODS.PAYU]: "Online (PayU)",
+  [PAYMENT_METHODS.SPRINTPGX]: "Online (SprintPGX)",
+};
+
 const TIMELINE = [
   { status: ORDER_STATUS.PLACED, label: "Placed" },
   { status: ORDER_STATUS.CONFIRMED, label: "Confirmed" },
@@ -111,7 +121,8 @@ export function OrderDetails({ order }: { order: OrderDTO }) {
           <p className="flex items-center gap-2 text-sm font-medium">
             {order.paymentMethod === PAYMENT_METHODS.COD
               ? "Cash on Delivery"
-              : "Online (Razorpay)"}
+              : (PAYMENT_METHOD_LABELS[order.paymentMethod] ??
+                "Online payment")}
             {order.paymentStatus === PAYMENT_STATUS.PAID ? (
               <Badge variant="mehendi">Paid</Badge>
             ) : order.paymentStatus === PAYMENT_STATUS.FAILED ? (

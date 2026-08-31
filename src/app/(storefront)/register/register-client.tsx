@@ -36,9 +36,15 @@ export function RegisterClient({ next }: { next: string }) {
         setSubmitting(false);
         return;
       }
-      router.push(
-        `/verify-email?email=${encodeURIComponent(data.email ?? input.email)}&next=${encodeURIComponent(next)}`
-      );
+      if (data.requiresVerification) {
+        router.push(
+          `/verify-email?email=${encodeURIComponent(data.email ?? input.email)}&next=${encodeURIComponent(next)}`
+        );
+      } else {
+        toast.success("Account created.");
+        router.push(next);
+        router.refresh();
+      }
       setSubmitting(false);
     } catch {
       toast.error("Network error — check your connection and try again.");

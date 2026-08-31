@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
+import { REQUIRE_EMAIL_VERIFICATION } from "@/lib/constants";
 import { loginSchema } from "@/lib/validations/auth";
 import { verifyPassword } from "@/server/auth/password";
 import { createEmailOtp } from "@/server/auth/otp";
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
     const valid = await verifyPassword(password, user.passwordHash);
     if (!valid) return apiError(INVALID_CREDENTIALS, 401);
 
-    if (!user.emailVerified) {
+    if (REQUIRE_EMAIL_VERIFICATION && !user.emailVerified) {
       const code = await createEmailOtp(user.id);
       await sendOtpEmail(user.email, code);
       return NextResponse.json(

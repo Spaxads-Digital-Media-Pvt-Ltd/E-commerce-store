@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/server/db";
+import { REQUIRE_EMAIL_VERIFICATION } from "@/lib/constants";
 import { registerSchema } from "@/lib/validations/auth";
 import { hashPassword } from "@/server/auth/password";
 import { createEmailOtp } from "@/server/auth/otp";
 import { sendOtpEmail } from "@/server/email";
+import {
+  createSessionToken,
+  sessionCookieOptions,
+  SESSION_COOKIE,
+} from "@/server/auth/session";
 import { clientIp, rateLimit } from "@/server/rate-limit";
 import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
+import { toUserDTO } from "@/server/serializers";
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,11 +34,28 @@ export async function POST(req: NextRequest) {
     const { name, email, password } = parsed.data;
 
     const existing = await db.user.findUnique({ where: { email } });
-    if (existing?.emailVerified) {
+    if (existing?.emailVerified || (existing && !REQUIRE_EMAIL_VERIFICATION)) {
       return apiError("An account with this email already exists.", 409);
     }
 
     const passwordHash = await hashPassword(password);
+
+    if (!REQUIRE_EMAIL_VERIFICATION) {
+      const user = await db.user.create({
+        data: { name, email, passwordHash, emailVerified: true },
+      });
+      const res = NextResponse.json(
+        { user: toUserDTO(user) },
+        { status: 201 }
+      );
+      res.cookies.set(
+        SESSION_COOKIE,
+        createSessionToken(user),
+        sessionCookieOptions
+      );
+      return res;
+    }
+
     // An unverified account from an abandoned signup gets its details
     // refreshed and a fresh code — not treated as a conflict.
     const user = existing

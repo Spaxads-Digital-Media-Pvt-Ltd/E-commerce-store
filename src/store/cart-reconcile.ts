@@ -53,6 +53,7 @@ export function reconcileCart(
       image: product.images[0] ?? item.image,
       qty: cappedQty,
       stock: product.stock,
+      size: item.size ?? null,
     });
   }
 

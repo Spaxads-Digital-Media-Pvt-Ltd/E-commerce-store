@@ -73,6 +73,8 @@ model Product {
   price       Int // in whole rupees — always ≤ 999
   mrp         Int // strikethrough "original" price
   images      String // JSON-encoded array of image URLs
+  sizes       String? // JSON array of available sizes; null/empty = one-size
+  attributes  String? // JSON object of spec key→value (Fabric, Fit, Pattern, …)
   categoryId  String
   category    Category    @relation(fields: [categoryId], references: [id])
   stock       Int         @default(0)
@@ -137,6 +139,7 @@ model OrderItem {
   price     Int // snapshot at time of order
   qty       Int
   image     String
+  size      String? // chosen size snapshot, if the product has sizes
 
   @@index([orderId])
 }

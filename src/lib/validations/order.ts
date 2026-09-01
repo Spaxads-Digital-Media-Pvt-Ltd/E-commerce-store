@@ -7,6 +7,9 @@ import { addressSchema } from "./address";
 export const orderItemInputSchema = z.object({
   productId: z.string().min(1).max(64),
   qty: z.number().int().min(1).max(MAX_QTY_PER_ITEM),
+  // Chosen size (for garments/footwear). Validated server-side against the
+  // product's available sizes; ignored for products that have none.
+  size: z.string().trim().max(40).optional(),
 });
 
 export const paymentMethodSchema = z.enum([

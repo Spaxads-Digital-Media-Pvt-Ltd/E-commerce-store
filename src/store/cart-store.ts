@@ -6,14 +6,21 @@ import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 // Guest cart — client-side only (blueprint §9). Persisted to localStorage via
 // zustand/persist. This state is a UI convenience: the server re-verifies
 // every price and stock level at checkout; nothing here is trusted for money.
+//
+// A line is identified by product + size, so the same garment added in two
+// sizes is two separate lines. `lineKey` is that identity everywhere.
+
+export function lineKey(item: { productId: string; size?: string | null }): string {
+  return `${item.productId}::${item.size ?? ""}`;
+}
 
 type CartState = {
   items: CartItem[];
   drawerOpen: boolean;
   hasHydrated: boolean;
   addItem: (item: Omit<CartItem, "qty">, qty?: number) => void;
-  updateQty: (productId: string, qty: number) => void;
-  removeItem: (productId: string) => void;
+  updateQty: (key: string, qty: number) => void;
+  removeItem: (key: string) => void;
   replaceItems: (items: CartItem[]) => void;
   clear: () => void;
   subtotal: () => number;
@@ -34,17 +41,16 @@ export const useCart = create<CartState>()(
       drawerOpen: false,
       hasHydrated: false,
 
-      // Adding an already-carted product increments its qty — never a
-      // duplicate line (§9).
+      // Adding an already-carted line (same product AND size) increments its
+      // qty — never a duplicate line (§9).
       addItem: (item, qty = 1) =>
         set((state) => {
-          const existing = state.items.find(
-            (i) => i.productId === item.productId
-          );
+          const key = lineKey(item);
+          const existing = state.items.find((i) => lineKey(i) === key);
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.productId === item.productId
+                lineKey(i) === key
                   ? { ...i, ...item, qty: capQty(i.qty + qty, item.stock) }
                   : i
               ),
@@ -55,16 +61,16 @@ export const useCart = create<CartState>()(
           };
         }),
 
-      updateQty: (productId, qty) =>
+      updateQty: (key, qty) =>
         set((state) => ({
           items: state.items.map((i) =>
-            i.productId === productId ? { ...i, qty: capQty(qty, i.stock) } : i
+            lineKey(i) === key ? { ...i, qty: capQty(qty, i.stock) } : i
           ),
         })),
 
-      removeItem: (productId) =>
+      removeItem: (key) =>
         set((state) => ({
-          items: state.items.filter((i) => i.productId !== productId),
+          items: state.items.filter((i) => lineKey(i) !== key),
         })),
 
       replaceItems: (items) => set({ items }),

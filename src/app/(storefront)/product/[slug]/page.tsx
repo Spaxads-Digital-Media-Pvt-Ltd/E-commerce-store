@@ -168,10 +168,32 @@ export default async function ProductPage({ params }: Props) {
             <h2 className="font-display text-lg font-bold text-ink">
               About this item
             </h2>
-            <p className="mt-2 text-sm leading-6 text-gray-500">
+            <p className="mt-2 whitespace-pre-line text-sm leading-6 text-gray-500">
               {product.description}
             </p>
           </section>
+
+          {product.attributes.length > 0 ? (
+            <section className="mt-6">
+              <h2 className="font-display text-lg font-bold text-ink">
+                Product details
+              </h2>
+              <dl className="mt-2 overflow-hidden rounded-2xl border border-gray-200">
+                {product.attributes.map((a, i) => (
+                  <div
+                    key={a.label}
+                    className={
+                      "flex gap-4 px-4 py-2.5 text-sm " +
+                      (i % 2 === 1 ? "bg-canvas-alt/60" : "")
+                    }
+                  >
+                    <dt className="w-32 shrink-0 text-gray-500">{a.label}</dt>
+                    <dd className="font-medium text-ink">{a.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
         </div>
       </div>
 

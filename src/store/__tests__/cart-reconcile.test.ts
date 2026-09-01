@@ -28,6 +28,8 @@ const dto = (over: Partial<ProductDTO> = {}): ProductDTO => ({
   ratingCount: 10,
   isActive: true,
   isFeatured: false,
+  sizes: [],
+  attributes: [],
   ...over,
 });
 

@@ -7,6 +7,7 @@ import {
   selectCartCount,
   selectCartSubtotal,
   useCart,
+  lineKey,
 } from "@/store/cart-store";
 import { COPY, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
@@ -58,7 +59,7 @@ export function CartDrawer() {
           <>
             <div className="flex-1 divide-y divide-gray-200 overflow-y-auto px-5">
               {items.map((item) => (
-                <CartLineItem key={item.productId} item={item} compact />
+                <CartLineItem key={lineKey(item)} item={item} compact />
               ))}
             </div>
 

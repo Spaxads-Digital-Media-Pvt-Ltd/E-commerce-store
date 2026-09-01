@@ -21,6 +21,8 @@ export type ProductDTO = {
   ratingCount: number;
   isActive: boolean;
   isFeatured: boolean;
+  sizes: string[]; // available sizes; empty = one-size / no size choice
+  attributes: { label: string; value: string }[]; // spec classification
 };
 
 // Client-side cart line (Zustand). UI convenience only — the server
@@ -33,6 +35,7 @@ export type CartItem = {
   image: string;
   qty: number;
   stock: number; // snapshot for the qty stepper cap; revalidated on /cart
+  size?: string | null; // chosen size, if the product has sizes
 };
 
 export type OrderItemDTO = {
@@ -41,6 +44,7 @@ export type OrderItemDTO = {
   qty: number;
   image: string;
   productSlug?: string;
+  size?: string | null;
 };
 
 export type OrderDTO = {

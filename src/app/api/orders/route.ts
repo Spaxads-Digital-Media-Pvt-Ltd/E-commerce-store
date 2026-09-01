@@ -7,7 +7,7 @@ import { computeTotals } from "@/lib/pricing";
 import { generateOrderNumber } from "@/server/order-number";
 import { clientIp, rateLimit } from "@/server/rate-limit";
 import { verifyTurnstile } from "@/server/turnstile";
-import { parseImages, toOrderDTO } from "@/server/serializers";
+import { parseImages, parseSizes, toOrderDTO } from "@/server/serializers";
 import { apiError, serverErrorResponse, zodErrorResponse } from "@/server/api";
 import {
   MAX_QTY_PER_ITEM,
@@ -115,41 +115,69 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Merge duplicate lines and cap quantities.
-    const qtyById = new Map<string, number>();
+    // Merge duplicate lines by (product + size) and cap each line's qty.
+    type ReqLine = { productId: string; size: string | null; qty: number };
+    const lineMap = new Map<string, ReqLine>();
     for (const item of input.items) {
-      qtyById.set(
-        item.productId,
-        Math.min((qtyById.get(item.productId) ?? 0) + item.qty, MAX_QTY_PER_ITEM)
-      );
+      const size = item.size?.trim() || null;
+      const key = `${item.productId}::${size ?? ""}`;
+      const prev = lineMap.get(key);
+      lineMap.set(key, {
+        productId: item.productId,
+        size,
+        qty: Math.min((prev?.qty ?? 0) + item.qty, MAX_QTY_PER_ITEM),
+      });
     }
-    const requested = [...qtyById.entries()].map(([productId, qty]) => ({
-      productId,
-      qty,
-    }));
+    const requested = [...lineMap.values()];
 
-    // ---- server truth: current price & stock ----
+    // ---- server truth: current price, stock & sizes ----
     const products = await db.product.findMany({
-      where: { id: { in: requested.map((r) => r.productId) }, isActive: true },
+      where: {
+        id: { in: [...new Set(requested.map((r) => r.productId))] },
+        isActive: true,
+      },
     });
     const productById = new Map(products.map((p) => [p.id, p]));
 
     const removedNames: string[] = [];
-    const available: { product: (typeof products)[number]; qty: number }[] = [];
+    // Stock is per-product (single count shared across sizes) — draw it down
+    // as we allocate across a product's size lines so we can never oversell.
+    const remaining = new Map<string, number>();
+    for (const p of products) remaining.set(p.id, p.stock);
+
+    const available: {
+      product: (typeof products)[number];
+      qty: number;
+      size: string | null;
+    }[] = [];
     for (const r of requested) {
       const product = productById.get(r.productId);
       if (!product) {
         removedNames.push("An unavailable item");
         continue;
       }
-      if (product.stock <= 0) {
+      // Size rules: a product WITH sizes requires a valid chosen size; a
+      // product without sizes ignores any size sent.
+      const sizes = parseSizes(product.sizes);
+      let size: string | null = null;
+      if (sizes.length > 0) {
+        if (!r.size || !sizes.includes(r.size)) {
+          removedNames.push(`${product.name} (choose a valid size)`);
+          continue;
+        }
+        size = r.size;
+      }
+      const left = remaining.get(product.id) ?? 0;
+      if (left <= 0) {
         removedNames.push(product.name);
         continue;
       }
-      available.push({ product, qty: Math.min(r.qty, product.stock) });
+      const qty = Math.min(r.qty, left);
+      remaining.set(product.id, left - qty);
+      available.push({ product, qty, size });
     }
 
-    const correctedCart = available.map(({ product, qty }) => ({
+    const correctedCart = available.map(({ product, qty, size }) => ({
       productId: product.id,
       slug: product.slug,
       name: product.name,
@@ -157,6 +185,7 @@ export async function POST(req: NextRequest) {
       image: parseImages(product.images)[0] ?? "",
       qty,
       stock: product.stock,
+      size,
     }));
     // Coupon: re-validated server-side against the DB subtotal. The client
     // only sends the code; the discount is computed here, never trusted (§13).
@@ -185,7 +214,7 @@ export async function POST(req: NextRequest) {
     );
 
     const qtyChanged = available.some(
-      (a) => a.qty !== qtyById.get(a.product.id)
+      (a) => a.qty !== lineMap.get(`${a.product.id}::${a.size ?? ""}`)?.qty
     );
     const totalDrifted =
       typeof input.expectedTotal === "number" &&
@@ -220,14 +249,28 @@ export async function POST(req: NextRequest) {
       attempts++;
       const orderNumber = generateOrderNumber();
       try {
+        // Total units per product across its size lines — decrement once,
+        // guarded, so concurrent checkouts can't oversell.
+        const qtyByProduct = new Map<string, number>();
+        for (const a of available) {
+          qtyByProduct.set(
+            a.product.id,
+            (qtyByProduct.get(a.product.id) ?? 0) + a.qty
+          );
+        }
+
         const order = await db.$transaction(async (tx) => {
-          for (const { product, qty } of available) {
+          for (const [productId, totalQty] of qtyByProduct) {
             const res = await tx.product.updateMany({
-              where: { id: product.id, isActive: true, stock: { gte: qty } },
-              data: { stock: { decrement: qty } },
+              where: { id: productId, isActive: true, stock: { gte: totalQty } },
+              data: { stock: { decrement: totalQty } },
             });
             // count === 0 → a concurrent checkout took the last units
-            if (res.count === 0) throw new OutOfStockError(product.name);
+            if (res.count === 0) {
+              throw new OutOfStockError(
+                productById.get(productId)?.name ?? "an item"
+              );
+            }
           }
 
           return tx.order.create({
@@ -255,13 +298,14 @@ export async function POST(req: NextRequest) {
                 : ORDER_STATUS.PENDING_PAYMENT,
               idempotencyKey: input.idempotencyKey,
               items: {
-                create: available.map(({ product, qty }) => ({
+                create: available.map(({ product, qty, size }) => ({
                   productId: product.id,
-                  // snapshot name/price at time of order (§10)
+                  // snapshot name/price/size at time of order (§10)
                   name: product.name,
                   price: product.price,
                   qty,
                   image: parseImages(product.images)[0] ?? "",
+                  size,
                 })),
               },
             },

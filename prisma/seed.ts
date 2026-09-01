@@ -108,6 +108,11 @@ async function main() {
         : localImages.length
           ? JSON.stringify(localImages)
           : imagesFor(p.slug),
+      sizes: p.sizes?.length ? JSON.stringify(p.sizes) : null,
+      attributes:
+        p.attributes && Object.keys(p.attributes).length
+          ? JSON.stringify(p.attributes)
+          : null,
       categoryId,
       stock: p.stock ?? stockFor(p.slug),
       rating: ratingFor(p.slug),

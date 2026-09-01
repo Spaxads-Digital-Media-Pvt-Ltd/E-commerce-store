@@ -385,10 +385,12 @@ export function CheckoutClient({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          // ONLY productId + qty — the server re-derives all prices (§13)
+          // ONLY productId + qty + chosen size — the server re-derives all
+          // prices and validates the size (§13)
           items: cartItems.map((i) => ({
             productId: i.productId,
             qty: i.qty,
+            size: i.size ?? undefined,
           })),
           customer,
           paymentMethod,

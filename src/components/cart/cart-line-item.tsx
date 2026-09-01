@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import type { CartItem } from "@/types";
-import { useCart } from "@/store/cart-store";
+import { useCart, lineKey } from "@/store/cart-store";
 import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
 import { QtyStepper } from "./qty-stepper";
@@ -19,6 +19,7 @@ export function CartLineItem({
   const updateQty = useCart((s) => s.updateQty);
   const removeItem = useCart((s) => s.removeItem);
   const max = Math.min(item.stock, MAX_QTY_PER_ITEM);
+  const key = lineKey(item);
 
   return (
     <div className="flex gap-3 py-4">
@@ -46,7 +47,7 @@ export function CartLineItem({
           </Link>
           <button
             type="button"
-            onClick={() => removeItem(item.productId)}
+            onClick={() => removeItem(key)}
             aria-label={`Remove ${item.name} from cart`}
             className="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-sindoor/10 hover:text-sindoor"
           >
@@ -56,13 +57,19 @@ export function CartLineItem({
 
         <p className="mt-0.5 text-xs text-gray-500">
           {formatINR(item.price)} each
+          {item.size ? (
+            <>
+              {" · "}
+              <span className="font-medium text-ink">Size {item.size}</span>
+            </>
+          ) : null}
         </p>
 
         <div className="mt-auto flex items-center justify-between gap-2 pt-2">
           <QtyStepper
             value={item.qty}
             max={max}
-            onChange={(qty) => updateQty(item.productId, qty)}
+            onChange={(qty) => updateQty(key, qty)}
             label={item.name}
           />
           <span className="font-display text-base font-bold text-ink">

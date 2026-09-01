@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
-import { useCart } from "@/store/cart-store";
+import { useCart, lineKey } from "@/store/cart-store";
 import { reconcileCart, type CartChange } from "@/store/cart-reconcile";
 import { COPY, FREE_SHIPPING_THRESHOLD } from "@/lib/constants";
 import { formatINR } from "@/lib/utils";
@@ -103,7 +103,7 @@ export function CartPageClient() {
       <div className="mt-6 gap-6 lg:grid lg:grid-cols-[1fr_360px] lg:items-start">
         <div className="divide-y divide-gray-200 rounded-2xl border border-gray-200 px-4">
           {items.map((item) => (
-            <CartLineItem key={item.productId} item={item} />
+            <CartLineItem key={lineKey(item)} item={item} />
           ))}
         </div>
 

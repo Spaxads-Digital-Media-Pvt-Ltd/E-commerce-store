@@ -167,6 +167,7 @@ export function OrderDetails({ order }: { order: OrderDTO }) {
                 )}
                 <p className="text-xs text-gray-500">
                   {formatINR(item.price)} × {item.qty}
+                  {item.size ? ` · Size ${item.size}` : ""}
                 </p>
               </div>
               <p className="shrink-0 font-display text-sm font-bold">

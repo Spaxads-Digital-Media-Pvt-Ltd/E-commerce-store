@@ -26,6 +26,10 @@ export type SeedProduct = {
   // "/images/products/<file>.jpg". Remote hosts must also be added to
   // images.remotePatterns in next.config.ts AND the CSP img-src there.
   images?: string[];
+  // Selectable sizes (garments/footwear). Omit for one-size products.
+  sizes?: string[];
+  // Spec classification shown on the product page (Fabric, Fit, Pattern, …).
+  attributes?: Record<string, string>;
 };
 
 export const CATEGORIES: SeedCategory[] = [
@@ -53,7 +57,16 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "mobile-electronics",
     isFeatured: true,
     description:
-      "True wireless earbuds with touch controls, a pocketable charging case and up to 20 hours of combined playtime. Punchy bass for music, clear mic for calls.",
+      "True wireless earbuds tuned for punchy, bass-forward sound, with responsive touch controls and a built-in mic that keeps calls clear. The pocketable charging case delivers up to 20 hours of combined playtime and tops the buds up on the go, while a snug in-ear fit helps block out background noise. Bluetooth pairing is quick and stays stable across the room.",
+    attributes: {
+      Connectivity: "Bluetooth 5.x",
+      Playtime: "Up to 20 hrs (with case)",
+      Driver: "10 mm Dynamic",
+      Microphone: "Built-in",
+      Charging: "USB Type-C",
+      Controls: "Touch",
+      Warranty: "6 Months",
+    },
   },
   {
     name: "Wired Earphones with Mic",
@@ -62,7 +75,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "mobile-electronics",
     description:
-      "In-ear wired earphones with an inline mic and one-button control. Tangle-resistant cable and snug silicone tips in three sizes.",
+      "In-ear wired earphones that keep things simple and reliable — plug into any 3.5 mm jack for clear, balanced sound with no charging required. The inline one-button control lets you play, pause and answer calls without reaching for your phone, and three sizes of soft silicone tips help you find a secure, comfortable seal. The tangle-resistant cable stands up to daily use.",
+    attributes: {
+      Connector: "3.5 mm Jack",
+      Driver: "10 mm",
+      Microphone: "Inline, 1-Button Control",
+      "Cable Length": "1.2 m",
+      "Ear Tips": "3 Sizes Included",
+    },
   },
   {
     name: "Silicone Phone Back Cover",
@@ -71,7 +91,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 499,
     categorySlug: "mobile-electronics",
     description:
-      "Soft-touch silicone cover with a raised lip that protects the camera and screen. Slim, grippy and easy to wipe clean.",
+      "A slim soft-touch silicone case that hugs your phone without adding bulk, with a grippy finish that resists slips and smudges. Raised lips around the camera and screen keep both lifted off flat surfaces, and precise cutouts leave every port and button easy to reach. Wipes clean in seconds. Please check that it matches your phone model before ordering.",
+    attributes: {
+      Material: "Soft Silicone",
+      Protection: "Raised Camera & Screen Lip",
+      Finish: "Matte, Anti-Slip",
+      Compatibility: "Model-specific — check before ordering",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Tempered Glass Protector (2-pack)",
@@ -80,7 +107,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "mobile-electronics",
     description:
-      "9H-hardness tempered glass with an oleophobic coating. Two protectors per pack, with alignment kit and dust stickers included.",
+      "A two-pack of 9H-hardness tempered glass protectors that shield your screen from scratches and absorb everyday knocks. The oleophobic coating repels fingerprints and keeps swipes smooth, while high transparency preserves touch response and display clarity. Each pack includes an alignment kit, cleaning wipes and dust-removal stickers for a clean, bubble-free application.",
+    attributes: {
+      Hardness: "9H",
+      Coating: "Oleophobic (Anti-Fingerprint)",
+      Pack: "2 Protectors",
+      Includes: "Alignment kit, wipes, dust stickers",
+      Transparency: "HD Clear",
+    },
   },
   {
     name: "USB Type-C Cable (1m)",
@@ -89,7 +123,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "mobile-electronics",
     description:
-      "1-metre Type-C cable with a braided jacket, fast-charging support and 480 Mbps data sync. Reinforced strain relief at both ends.",
+      "A 1-metre USB-A to Type-C cable built to last, wrapped in a braided nylon jacket that resists fraying and tangles. It supports fast charging for phones and tablets and syncs data at up to 480 Mbps, with reinforced strain relief at both ends where cables usually give out first. A dependable everyday cable for charging and transfers.",
+    attributes: {
+      Length: "1 m",
+      Jacket: "Braided Nylon",
+      Charging: "Fast Charge Supported",
+      "Data Speed": "Up to 480 Mbps",
+      Connector: "USB-A to Type-C",
+    },
   },
   {
     name: "20W Fast Wall Charger",
@@ -98,7 +139,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "mobile-electronics",
     description:
-      "Compact 20W USB-C PD wall adapter that tops up most phones to 50% in about 30 minutes. Built-in over-current and over-heat protection.",
+      "A compact 20W USB-C Power Delivery wall charger that tops most phones up to around 50% in about 30 minutes, so a short plug-in gets you through the day. The small footprint travels easily and won't block the next socket, while built-in protection guards against over-current, over-voltage and overheating. Compatible with PD and most fast-charge phones.",
+    attributes: {
+      Output: "20W USB-C PD",
+      "Charge Speed": "~50% in 30 min",
+      Safety: "Over-current / over-heat protection",
+      Compatibility: "PD / fast-charge phones",
+      Port: "USB-C",
+    },
   },
 
   // ── Women's Ethnic & Western Wear ───────────────────────────────────
@@ -110,7 +158,18 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "womens-fashion",
     isFeatured: true,
     description:
-      "Breathable rayon kurti in an all-over print with a clean straight cut and side slits. Machine washable and true to size.",
+      "A breathable rayon straight kurti in a fresh all-over print, cut clean and straight with side slits for easy movement. Knee-length with three-quarter sleeves and a round neck — pairs just as well with leggings as with jeans. Colour-fast, machine washable and true to size.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Rayon",
+      Fit: "Straight",
+      Length: "Knee Length",
+      Sleeve: "Three-Quarter Sleeve",
+      Neck: "Round Neck",
+      Pattern: "Printed",
+      Occasion: "Daily / Casual Wear",
+      "Wash Care": "Machine wash cold, do not bleach",
+    },
   },
   {
     name: "Cotton Ethnic Kurta",
@@ -119,7 +178,18 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1499,
     categorySlug: "womens-fashion",
     description:
-      "Soft handloom-feel cotton kurta with three-quarter sleeves and wooden-look buttons. An easy fit made for all-day comfort.",
+      "A soft, handloom-feel cotton kurta with a relaxed regular fit, three-quarter sleeves and wooden-look buttons at a mandarin neck. Calf-length and airy enough for all-day wear, dressed up for festive days or down for everyday. Gets softer with every wash.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Cotton",
+      Fit: "Regular",
+      Length: "Calf Length",
+      Sleeve: "Three-Quarter Sleeve",
+      Neck: "Mandarin / Band Collar",
+      Pattern: "Solid",
+      Occasion: "Festive / Daily Wear",
+      "Wash Care": "Gentle machine wash",
+    },
   },
   {
     name: "Georgette Printed Dupatta",
@@ -128,7 +198,16 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 699,
     categorySlug: "womens-fashion",
     description:
-      "Lightweight 2.25 m georgette dupatta with a delicate print and finished edges. Pairs with kurtis and suits alike.",
+      "A lightweight 2.25-metre georgette dupatta with a delicate print and neatly finished edges. Drapes softly and adds a finishing layer to kurtis and suits alike. One free size that suits everyone.",
+    attributes: {
+      Fabric: "Georgette",
+      Size: "Free Size",
+      Length: "2.25 m",
+      Width: "90 cm",
+      Pattern: "Printed",
+      Occasion: "Ethnic / Festive",
+      "Wash Care": "Hand wash separately",
+    },
   },
   {
     name: "Casual Crop Top",
@@ -137,7 +216,18 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "womens-fashion",
     description:
-      "Stretch-knit crop top with a flattering scoop neck. Layer it or wear it solo — it holds its shape wash after wash.",
+      "A stretch-knit crop top with a flattering scoop neck and short sleeves, in a soft cotton blend that moves with you. Layer it over a dress or wear it solo with jeans — it keeps its shape wash after wash.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Cotton-Blend Knit",
+      Fit: "Slim",
+      Length: "Cropped",
+      Sleeve: "Short Sleeve",
+      Neck: "Scoop Neck",
+      Pattern: "Solid",
+      Occasion: "Casual Wear",
+      "Wash Care": "Machine wash cold",
+    },
   },
   {
     name: "Palazzo Pants",
@@ -146,7 +236,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "womens-fashion",
     description:
-      "Flowy wide-leg palazzos with an elasticated waist and side pockets. Wrinkle-friendly fabric that travels well.",
+      "Flowy wide-leg palazzos in a soft, wrinkle-friendly rayon, with a comfortable elasticated waist and handy side pockets. Full-length and breezy — dress them up with a kurti or down with a tee. Fabric that travels well and needs little ironing.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Rayon",
+      Fit: "Wide Leg",
+      Length: "Full Length",
+      Waist: "Elasticated",
+      Pattern: "Solid",
+      Occasion: "Ethnic / Casual Wear",
+      "Wash Care": "Machine wash cold",
+    },
   },
   {
     name: "Printed Nightwear Set",
@@ -155,7 +255,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1199,
     categorySlug: "womens-fashion",
     description:
-      "Two-piece cotton-blend nightwear set — a relaxed tee and pyjamas in a playful print. Soft, breathable sleep comfort.",
+      "A two-piece cotton-blend nightwear set — a relaxed tee paired with full-length pyjamas in a playful print. Soft, breathable and roomy for genuinely comfortable sleep or lazy days in. An easy relaxed fit.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Cotton Blend",
+      Fit: "Relaxed",
+      Pieces: "Top + Pyjama",
+      Sleeve: "Short Sleeve",
+      Pattern: "Printed",
+      Occasion: "Sleepwear / Loungewear",
+      "Wash Care": "Machine wash cold",
+    },
   },
 
   // ── Men's Fashion ───────────────────────────────────────────────────
@@ -166,7 +276,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "mens-fashion",
     description:
-      "180 GSM combed-cotton tee with a ribbed neck that doesn't sag. Pre-shrunk and bio-washed for softness.",
+      "A 180 GSM combed-cotton tee with a regular fit and a ribbed round neck that keeps its shape and doesn't sag. Pre-shrunk and bio-washed so it stays soft and true to size wash after wash. An everyday essential.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "100% Combed Cotton (180 GSM)",
+      Fit: "Regular",
+      Sleeve: "Half Sleeve",
+      Neck: "Round Neck",
+      Pattern: "Solid",
+      Occasion: "Casual Wear",
+      "Wash Care": "Machine wash cold, tumble dry low",
+    },
   },
   {
     name: "Checked Casual Shirt",
@@ -175,7 +295,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1499,
     categorySlug: "mens-fashion",
     description:
-      "Classic checks on a breathable cotton-blend fabric with a curved hem and chest pocket. Regular fit.",
+      "A classic checked shirt in a breathable cotton-blend, cut in an easy regular fit with a spread collar, full sleeves, a curved hem and a chest pocket. Smart enough for work, relaxed enough for the weekend.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Cotton Blend",
+      Fit: "Regular",
+      Sleeve: "Full Sleeve",
+      Collar: "Spread Collar",
+      Pattern: "Checked",
+      Occasion: "Casual / Semi-Formal",
+      "Wash Care": "Machine wash cold",
+    },
   },
   {
     name: "Slim Fit Joggers",
@@ -184,7 +314,16 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1299,
     categorySlug: "mens-fashion",
     description:
-      "Tapered joggers with a drawstring waist, zip pockets and cuffed hems. Four-way stretch for the gym or the commute.",
+      "Tapered slim-fit joggers in a cotton-poly blend with four-way stretch, a drawstring elastic waist, secure zip pockets and cuffed hems. Equally at home at the gym or on the commute.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "Cotton-Polyester (4-Way Stretch)",
+      Fit: "Slim / Tapered",
+      Waist: "Drawstring Elastic",
+      Pockets: "Zip Pockets",
+      Occasion: "Active / Casual Wear",
+      "Wash Care": "Machine wash cold",
+    },
   },
   {
     name: "Formal Leatherette Belt",
@@ -193,7 +332,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 699,
     categorySlug: "mens-fashion",
     description:
-      "Sleek leatherette belt with a brushed-metal buckle. 34 mm width — sized for formal trousers and jeans alike.",
+      "A sleek 34 mm leatherette belt with a brushed-metal pin buckle, smart enough for formal trousers and rugged enough for jeans. One adjustable size fits waists from about 30 to 42 inches — just trim to length if needed.",
+    attributes: {
+      Material: "Leatherette (PU)",
+      Size: "Adjustable (fits 30–42 in)",
+      Width: "34 mm",
+      Buckle: "Brushed-Metal Pin Buckle",
+      Occasion: "Formal / Casual",
+      Care: "Wipe clean with a dry cloth",
+    },
   },
   {
     name: "Cotton Boxers (Pack of 3)",
@@ -202,7 +349,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "mens-fashion",
     description:
-      "Three assorted-print cotton boxers with a covered elastic waistband. Breathable, lightweight and built to last.",
+      "A pack of three pure-cotton boxers in assorted prints, with a soft covered elastic waistband that stays put without digging in. Breathable, lightweight and built to last through daily wear and washing.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    attributes: {
+      Fabric: "100% Cotton",
+      Fit: "Regular",
+      Waistband: "Covered Elastic",
+      Pattern: "Assorted Prints",
+      Pack: "3 Pieces",
+      Occasion: "Innerwear / Loungewear",
+      "Wash Care": "Machine wash cold",
+    },
   },
   {
     name: "Analog Wrist Watch",
@@ -212,7 +369,16 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "mens-fashion",
     isFeatured: true,
     description:
-      "Minimal analog watch with a stainless-steel-look case, quartz movement and leatherette strap. Splash resistant.",
+      "A minimal analog watch with a clean round dial, a stainless-steel-look case and a comfortable leatherette strap. Reliable quartz movement, splash resistant for everyday wear, and backed by a 6-month warranty.",
+    attributes: {
+      Movement: "Quartz (Analog)",
+      "Case Finish": "Stainless-Steel-Look",
+      Dial: "Round",
+      Strap: "Leatherette",
+      "Water Resistance": "Splash Resistant",
+      Warranty: "6 Months",
+      Care: "Keep away from water; wipe dry",
+    },
   },
 
   // ── Jewellery & Fashion Accessories ─────────────────────────────────
@@ -224,7 +390,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "jewellery-accessories",
     isFeatured: true,
     description:
-      "Handcrafted-style oxidised jhumkas with intricate detailing and secure push backs. Featherlight for all-day wear.",
+      "Handcrafted-style oxidised jhumka earrings with intricate antique detailing and a rich silver-tone finish that pairs beautifully with kurtis, sarees and Indo-western looks. They're surprisingly featherlight, so you can wear them from a morning function through to the evening, and secure push backs keep them comfortably in place all day.",
+    attributes: {
+      Material: "Alloy",
+      Plating: "Oxidised Silver-Tone",
+      Closure: "Push-Back",
+      Style: "Jhumka",
+      Occasion: "Ethnic / Festive",
+      Care: "Keep dry; avoid perfume & water",
+    },
   },
   {
     name: "Kundan Choker Necklace Set",
@@ -234,7 +408,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "jewellery-accessories",
     stock: 0, // demos the out-of-stock state
     description:
-      "Regal kundan choker with matching earrings, pearl drops and an adjustable dori. Festive and wedding ready.",
+      "A regal kundan choker necklace set that brings instant occasion-wear glamour — a statement choker studded with kundan stones, finished with delicate pearl drops and paired with matching earrings. The adjustable back dori means one size flatters every neckline, making it a go-to for weddings, receptions and festive evenings.",
+    attributes: {
+      Material: "Alloy with Kundan Stones & Pearls",
+      Plating: "Gold-Tone",
+      Includes: "Necklace + Earrings",
+      Closure: "Adjustable Dori",
+      Occasion: "Wedding / Festive",
+      Care: "Store in a pouch; keep dry",
+    },
   },
   {
     name: "Pearl Drop Earrings (3 pairs)",
@@ -243,7 +425,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 699,
     categorySlug: "jewellery-accessories",
     description:
-      "Set of three faux-pearl drop pairs in a gold-tone finish — everyday, office and evening styles in one box.",
+      "A set of three faux-pearl drop earring pairs in a warm gold-tone finish — one easy box that covers everyday, office and evening looks. Lightweight and comfortable with secure push backs, they add a soft, elegant finish to both western and ethnic outfits. Great value and a ready-made little gift.",
+    attributes: {
+      Material: "Faux Pearl & Alloy",
+      Plating: "Gold-Tone",
+      Pack: "3 Pairs",
+      Closure: "Push-Back",
+      Occasion: "Daily / Office / Evening",
+      Care: "Avoid water & perfume",
+    },
   },
   {
     name: "Adjustable Charm Bracelet",
@@ -252,7 +442,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 499,
     categorySlug: "jewellery-accessories",
     description:
-      "Dainty gold-tone bracelet with a sliding closure that fits every wrist. Skin-friendly, tarnish-resistant plating.",
+      "A dainty gold-tone charm bracelet with a smart sliding closure that adjusts to fit any wrist — no clasps to fiddle with. The skin-friendly, tarnish-resistant plating keeps its shine with everyday wear, making it an easy layering piece or a thoughtful little gift.",
+    attributes: {
+      Material: "Alloy",
+      Plating: "Gold-Tone (Tarnish-Resistant)",
+      Closure: "Adjustable Slider",
+      Occasion: "Casual / Daily Wear",
+      Care: "Keep away from water & perfume",
+    },
   },
   {
     name: "Statement Ring Set (6 pcs)",
@@ -261,7 +458,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "jewellery-accessories",
     description:
-      "Six mix-and-match statement rings — bands, stones and textures, with adjustable sizing on the larger designs.",
+      "A six-piece statement ring set that mixes slim bands, stones and textured designs so you can stack and style them your way. The larger designs are adjustable for an easy fit across fingers, and the set works as well for a party look as it does for everyday flair — six pieces at one friendly price.",
+    attributes: {
+      Material: "Alloy",
+      Pack: "6 Rings",
+      Sizing: "Adjustable (larger pieces)",
+      Occasion: "Party / Casual",
+      Care: "Wipe clean; keep dry",
+    },
   },
   {
     name: "UV-Protected Sunglasses",
@@ -270,7 +474,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "jewellery-accessories",
     description:
-      "Unisex sunglasses with UV400 lenses and a lightweight matte frame. A soft protective pouch is included.",
+      "Unisex sunglasses with UV400 lenses that block 100% of harmful UVA and UVB rays, cutting glare on bright days, drives and travel. The lightweight matte frame sits comfortably for hours and suits most face shapes, and a soft protective pouch is included to keep the lenses scratch-free between wears.",
+    attributes: {
+      "Lens Protection": "UV400 (100% UVA/UVB)",
+      Frame: "Lightweight Matte",
+      Gender: "Unisex",
+      Includes: "Protective Pouch",
+      Occasion: "Outdoor / Travel / Driving",
+    },
   },
 
   // ── Footwear ────────────────────────────────────────────────────────
@@ -281,7 +492,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "footwear",
     description:
-      "Cushioned soft-strap flip flops with an anti-skid sole. Everyday comfort that handles wet floors without fuss.",
+      "Cushioned flip flops with soft, comfortable straps and an anti-skid sole that grips wet floors without fuss. Lightweight everyday comfort for indoors and quick trips out. Available in whole UK sizes.",
+    sizes: ["4", "5", "6", "7", "8"],
+    attributes: {
+      Material: "EVA / Rubber",
+      Sole: "Anti-Skid",
+      Closure: "Slip-On",
+      Type: "Flip Flops",
+      "Size Type": "UK / India (Women's)",
+      Occasion: "Casual / Daily Wear",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Men's Sports Sandals",
@@ -290,7 +511,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "footwear",
     description:
-      "Rugged sports sandals with adjustable straps and a shock-absorbing EVA sole. Ready for treks and town alike.",
+      "Rugged sports sandals with three adjustable velcro straps for a locked-in fit and a shock-absorbing EVA sole that cushions every step. Grippy and hard-wearing — ready for treks, travel and town alike.",
+    sizes: ["6", "7", "8", "9", "10"],
+    attributes: {
+      Material: "Synthetic",
+      Sole: "Shock-Absorbing EVA",
+      Closure: "Adjustable Velcro Straps",
+      Type: "Sports Sandals",
+      "Size Type": "UK / India (Men's)",
+      Occasion: "Outdoor / Casual",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Women's Bellies (Ballet Flats)",
@@ -299,7 +530,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1299,
     categorySlug: "footwear",
     description:
-      "Classic round-toe bellies with a cushioned insole and flexible grip sole. Slip them on with ethnic or western wear.",
+      "Classic round-toe bellies with a cushioned insole and a flexible anti-slip sole that keeps you comfortable all day. An easy slip-on that finishes both ethnic and western looks.",
+    sizes: ["4", "5", "6", "7", "8"],
+    attributes: {
+      Material: "PU / Synthetic",
+      Sole: "TPR Anti-Slip",
+      Closure: "Slip-On",
+      "Toe Shape": "Round Toe",
+      "Size Type": "UK / India (Women's)",
+      Occasion: "Ethnic / Casual",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Kids' Velcro Sneakers",
@@ -308,7 +549,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "footwear",
     description:
-      "Lightweight sneakers with easy velcro straps kids can manage themselves. Reinforced toe cap for rough play.",
+      "Lightweight kids' sneakers with easy velcro straps little ones can fasten themselves, a cushioned EVA sole and a reinforced toe cap that stands up to rough play. Great for school and playtime. Sizes in UK kids'.",
+    sizes: ["8", "9", "10", "11", "12", "13"],
+    attributes: {
+      Material: "Mesh / Synthetic",
+      Sole: "Cushioned EVA",
+      Closure: "Velcro",
+      "Size Type": "UK Kids'",
+      "Age Group": "3–8 years",
+      Occasion: "Casual / School",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Men's Casual Loafers",
@@ -318,7 +569,17 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "footwear",
     stock: 0, // demos the out-of-stock state
     description:
-      "Slip-on loafers in a suede-feel finish with stitched detailing and a memory-foam footbed for long days.",
+      "Slip-on loafers in a soft suede-feel finish with neat stitched detailing and a memory-foam footbed that stays comfortable through long days. Smart-casual shoes that dress up jeans or chinos with ease.",
+    sizes: ["6", "7", "8", "9", "10"],
+    attributes: {
+      Material: "Suede-Feel Synthetic",
+      Sole: "TPR",
+      Footbed: "Memory Foam",
+      Closure: "Slip-On",
+      "Size Type": "UK / India (Men's)",
+      Occasion: "Casual / Semi-Formal",
+      Care: "Wipe clean with a soft brush",
+    },
   },
   {
     name: "Unisex Flip-Flop Slides",
@@ -327,7 +588,17 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "footwear",
     description:
-      "Minimal one-band slides with a contoured footbed. Quick-dry, ultra-light and easy on the feet.",
+      "Minimal single-band slides with a contoured footbed that supports the arch and an ultra-light, quick-dry build. Easy to slip on for the beach, the pool or around the house. Unisex whole sizes.",
+    sizes: ["6", "7", "8", "9", "10"],
+    attributes: {
+      Material: "EVA",
+      Sole: "Contoured Footbed",
+      Closure: "Single-Band Slip-On",
+      Type: "Slides",
+      "Size Type": "UK / India (Unisex)",
+      Occasion: "Casual / Beach",
+      Care: "Quick-dry; wipe clean",
+    },
   },
 
   // ── Bags & Wallets ──────────────────────────────────────────────────
@@ -339,7 +610,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "bags-wallets",
     isFeatured: true,
     description:
-      "Compact PU sling with an adjustable strap, magnetic flap and two inner pockets. Fits phone, wallet and keys.",
+      "A compact PU sling bag that carries your essentials hands-free — phone, wallet, keys and a few extras — without weighing you down. The adjustable strap sets your ideal length, a secure magnetic flap keeps things closed, and two inner pockets help you stay organised. An easy everyday bag that dresses up or down.",
+    attributes: {
+      Material: "PU (Faux Leather)",
+      Closure: "Magnetic Flap",
+      Strap: "Adjustable",
+      Compartments: "Main + 2 Inner Pockets",
+      Occasion: "Casual / Daily",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Men's Bi-Fold Wallet",
@@ -348,7 +627,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "bags-wallets",
     description:
-      "Slim bi-fold wallet with six card slots, two note compartments and a coin pocket in a textured PU finish.",
+      "A slim bi-fold wallet in a smart textured PU finish that stays comfortable in your pocket. It's organised without being bulky — six card slots, two note compartments and a coin pocket keep cards, cash and change tidy and easy to reach. A practical everyday carry that also makes a neat gift.",
+    attributes: {
+      Material: "Textured PU (Faux Leather)",
+      Type: "Bi-Fold",
+      "Card Slots": "6",
+      Compartments: "2 Note + 1 Coin Pocket",
+      Occasion: "Everyday / Formal",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Printed Canvas Tote Bag",
@@ -357,7 +644,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "bags-wallets",
     description:
-      "Roomy 14-inch canvas tote with a zip closure and inner pocket. Machine washable, with shoulder-friendly straps.",
+      "A roomy 14-inch printed canvas tote that swallows daily essentials — books, laptop, groceries or gym kit — with space to spare. A top zip keeps everything secure, an inner pocket holds small items, and the shoulder-friendly straps stay comfortable even when it's full. Sturdy, reusable and machine washable.",
+    attributes: {
+      Material: "Cotton Canvas",
+      Size: "14 inch",
+      Closure: "Top Zip",
+      Compartments: "Main + Inner Pocket",
+      Occasion: "Daily / College / Shopping",
+      Care: "Machine washable",
+    },
   },
   {
     name: "Travel Pouch Organiser (3 pcs)",
@@ -366,7 +661,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "bags-wallets",
     description:
-      "Three zip pouches in graded sizes for cables, cosmetics and documents, all with a water-resistant lining.",
+      "A set of three zip pouches in graded sizes that bring order to any bag or suitcase — sort cables and chargers, cosmetics and toiletries, or documents and travel bits into their own pockets. Each pouch has a water-resistant lining and a smooth zip, so spills stay contained and everything's easy to find.",
+    attributes: {
+      Material: "Polyester",
+      Lining: "Water-Resistant",
+      Pack: "3 Pouches (Graded Sizes)",
+      Closure: "Zip",
+      Occasion: "Travel / Organisation",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Casual Backpack (15L)",
@@ -376,7 +679,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "bags-wallets",
     isFeatured: true,
     description:
-      "15-litre daypack with padded straps, a laptop sleeve for up to 14 inches and a quick-access front pocket.",
+      "A practical 15-litre daypack that handles college, commutes and short trips with ease. A padded sleeve safely holds laptops up to 14 inches, the main compartment swallows books and a change of clothes, and a quick-access front pocket keeps your phone and keys handy. Padded, adjustable straps keep it comfortable all day.",
+    attributes: {
+      Material: "Polyester",
+      Capacity: "15 L",
+      "Laptop Sleeve": "Fits up to 14 inch",
+      Compartments: "Main + Front Pocket",
+      Straps: "Padded, Adjustable",
+      Occasion: "College / Commute / Travel",
+    },
   },
   {
     name: "Small Coin Purse",
@@ -385,7 +696,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 249,
     categorySlug: "bags-wallets",
     description:
-      "Palm-size zip purse for coins, notes and cards. Sturdy fabric build with a handy key-ring loop.",
+      "A palm-size zip purse that keeps coins, folded notes and a card or two neatly together — perfect to drop into a bag or pocket. The sturdy fabric build handles daily use, and a handy key-ring loop means your keys are always attached and easy to find. Small, useful and great value.",
+    attributes: {
+      Material: "Fabric",
+      Closure: "Zip",
+      Holds: "Coins, Notes & Cards",
+      Feature: "Key-Ring Loop",
+      Occasion: "Everyday Carry",
+      Care: "Wipe clean",
+    },
   },
 
   // ── Home & Kitchen ──────────────────────────────────────────────────
@@ -397,7 +716,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "home-kitchen",
     isFeatured: true,
     description:
-      "Pull-cord chopper with stainless blades that dices onions in seconds — 12 attachments cover chopping, whisking and storing.",
+      "A 12-in-1 manual vegetable chopper that turns onions, tomatoes, garlic and more into an even dice in seconds — just pull the cord and the sharp stainless-steel blades do the work, no electricity or teary eyes required. The bundle covers chopping, whisking and storing, and the bowl doubles as an airtight container. Parts come apart for quick, easy cleaning.",
+    attributes: {
+      Blades: "Stainless Steel",
+      Operation: "Manual Pull-Cord",
+      Pieces: "12-in-1 Set",
+      Uses: "Chop, Whisk & Store",
+      "Bowl Material": "BPA-Free Plastic",
+      Care: "Hand wash; blades not dishwasher safe",
+    },
   },
   {
     name: "Insulated Steel Water Bottle (1L)",
@@ -406,7 +733,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "home-kitchen",
     description:
-      "Double-wall vacuum bottle that keeps drinks cold for 18 hours or hot for 8. Leak-proof cap, 1-litre capacity.",
+      "A 1-litre double-wall vacuum steel bottle that keeps drinks cold for up to 18 hours or hot for up to 8 — ideal for the gym, office, travel and long commutes. The leak-proof cap means you can toss it in a bag without worry, and the sweat-free exterior stays comfortable to hold. Rust-resistant food-grade stainless steel inside and out.",
+    attributes: {
+      Material: "Food-Grade Stainless Steel",
+      Capacity: "1 Litre",
+      Insulation: "Double-Wall Vacuum",
+      Retention: "Cold ~18 hrs / Hot ~8 hrs",
+      Cap: "Leak-Proof",
+      Care: "Hand wash recommended",
+    },
   },
   {
     name: "Non-Stick Dosa Tawa (28cm)",
@@ -415,7 +750,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1199,
     categorySlug: "home-kitchen",
     description:
-      "28 cm aluminium dosa tawa with a 3-layer non-stick coating and heat-proof handle. Gas stove compatible.",
+      "A 28 cm aluminium dosa tawa with a durable 3-layer non-stick coating that lets you make crisp, evenly-browned dosas, chillas and rotis with very little oil. Heat spreads uniformly across the base for consistent results, and the sturdy heat-proof handle stays cool and comfortable. Easy to clean and gas-stove compatible.",
+    attributes: {
+      Material: "Aluminium",
+      Coating: "3-Layer Non-Stick",
+      Diameter: "28 cm",
+      Handle: "Heat-Proof",
+      Compatibility: "Gas Stove",
+      Care: "Hand wash; use soft/wooden spatulas",
+    },
   },
   {
     name: "Airtight Storage Container Set",
@@ -424,7 +767,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "home-kitchen",
     description:
-      "Stackable BPA-free containers with click-lock airtight lids. Keeps dals, spices and snacks fresh for weeks.",
+      "A set of stackable, BPA-free storage containers with click-lock airtight lids that keep dals, cereals, spices and snacks fresh and free from moisture and pests for weeks. The clear bodies make it easy to see what's inside, and the uniform shape stacks neatly to make the most of every shelf. A tidy, practical kitchen upgrade.",
+    attributes: {
+      Material: "BPA-Free Plastic",
+      Lids: "Click-Lock Airtight",
+      Feature: "Stackable, See-Through",
+      Uses: "Dals, Spices, Snacks & Cereals",
+      Care: "Hand wash; not microwave safe",
+    },
   },
   {
     name: "Silicone Kitchen Utensil Set",
@@ -433,7 +783,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "home-kitchen",
     description:
-      "Heat-resistant silicone spatulas, ladle and brush that won't scratch non-stick cookware. Easy-clean and hygienic.",
+      "A set of heat-resistant silicone kitchen tools — spatulas, ladle and basting brush — designed to be gentle on non-stick cookware so nothing gets scratched. The seamless, food-grade silicone won't absorb odours or stain, wipes clean easily and stays hygienic. Comfortable grips and hanging loops make everyday cooking a little nicer.",
+    attributes: {
+      Material: "Food-Grade Silicone",
+      Feature: "Non-Scratch, Heat-Resistant",
+      Includes: "Spatulas, Ladle & Brush",
+      "Odour/Stain": "Resistant",
+      Care: "Dishwasher safe",
+    },
   },
   {
     name: "Rechargeable Electric Gas Lighter",
@@ -442,7 +799,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "home-kitchen",
     description:
-      "Flameless USB-rechargeable arc lighter with a safety switch. One charge lights the stove for weeks.",
+      "A flameless, USB-rechargeable electric arc lighter that lights gas stoves, candles and incense at the press of a button — no gas refills, no matches, no wind blowing it out. A single charge lasts for weeks of daily use, and the built-in safety switch prevents accidental sparks. A clean, reusable replacement for disposable lighters.",
+    attributes: {
+      Type: "Electric Arc (Flameless)",
+      Charging: "USB-Rechargeable",
+      Backup: "Weeks per charge",
+      Safety: "Child-Safe Switch",
+      Uses: "Stove, Candles & Incense",
+      Care: "Keep dry",
+    },
   },
 
   // ── Home Decor & Furnishing ─────────────────────────────────────────
@@ -453,7 +818,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "home-decor",
     description:
-      "Two 16×16 inch cushion covers with tonal embroidery and hidden zips. An instant sofa refresh.",
+      "A pair of 16×16 inch cushion covers with elegant tonal embroidery that instantly lifts a sofa, bed or reading chair. Hidden zips keep the look clean and make covers easy to slip on and off for washing, and the neutral tones blend with almost any decor. Cushion inserts not included.",
+    attributes: {
+      Material: "Poly-Cotton Blend",
+      Size: "16 × 16 in (40 × 40 cm)",
+      Pack: "Set of 2",
+      Closure: "Hidden Zip",
+      Design: "Tonal Embroidery",
+      Care: "Gentle machine wash; inserts not included",
+    },
   },
   {
     name: "Wooden Wall Key Holder",
@@ -462,7 +835,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 699,
     categorySlug: "home-decor",
     description:
-      "Sheesham-finish key holder with six hooks and a floating shelf lip for mail. Mounting hardware included.",
+      "A wall-mounted key holder in a warm sheesham-wood finish that keeps keys off the counter and by the door where you need them. Six sturdy hooks hold keys, lanyards and small bags, while the slim floating shelf lip is just right for mail, sunglasses or a phone. Mounting hardware is included for a quick set-up.",
+    attributes: {
+      Material: "Engineered Wood (Sheesham Finish)",
+      Hooks: "6",
+      Feature: "Floating Shelf Lip for Mail",
+      Mounting: "Wall-Mounted (hardware included)",
+      Care: "Wipe clean with a dry cloth",
+    },
   },
   {
     name: "LED Fairy String Lights (10m)",
@@ -472,7 +852,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "home-decor",
     isFeatured: true,
     description:
-      "10-metre warm-white fairy lights with 8 glow modes. Perfect for balconies, headboards and festive corners.",
+      "A 10-metre string of warm-white LED fairy lights that adds a soft, cosy glow to balconies, headboards, shelves and festive corners. Eight lighting modes let you go from a steady warm shine to a gentle twinkle, and the flexible wire bends easily around railings, frames and plants. Low-heat, energy-efficient LEDs made for Diwali, weddings and everyday ambience.",
+    attributes: {
+      Length: "10 m",
+      Colour: "Warm White",
+      Modes: "8 Lighting Modes",
+      "Light Source": "Energy-Efficient LED",
+      Uses: "Festive / Decor / Ambience",
+      Care: "Indoor use; keep away from water",
+    },
   },
   {
     name: "Photo Frame Collage Set",
@@ -481,7 +869,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "home-decor",
     description:
-      "Six-frame collage set in mixed sizes with a hanging template — a gallery wall in under ten minutes.",
+      "A six-frame photo collage set in mixed sizes that turns a bare wall into a personal gallery of memories. A printed hanging template takes the guesswork out of spacing, so you get a balanced, put-together layout in under ten minutes. Slim, lightweight frames with clear fronts that keep photos crisp.",
+    attributes: {
+      Material: "Synthetic Wood (MDF) with Clear Front",
+      Pieces: "6 Frames (Mixed Sizes)",
+      Includes: "Hanging Template & Hardware",
+      Mounting: "Wall-Mounted",
+      Care: "Wipe clean with a dry cloth",
+    },
   },
   {
     name: "Cotton Door Curtain (7ft)",
@@ -490,7 +885,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 999,
     categorySlug: "home-decor",
     description:
-      "7-foot cotton door curtain with a tab top and subtle weave. Filters harsh light while keeping air moving.",
+      "A 7-foot cotton door curtain with a subtle woven texture that softens a doorway while still letting light and air move through. The tab top slides easily onto most rods and hangs in clean, even folds. A simple, breathable way to add privacy and warmth to a room. Single panel; rod not included.",
+    attributes: {
+      Material: "Cotton",
+      Size: "7 ft (Door Length)",
+      "Header Type": "Tab Top",
+      Pack: "1 Panel",
+      "Light Filtering": "Semi-Sheer",
+      Care: "Machine wash gentle",
+    },
   },
   {
     name: "Decorative Wall Clock",
@@ -499,7 +902,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1299,
     categorySlug: "home-decor",
     description:
-      "30 cm silent-sweep wall clock with bold numerals and a matte frame. No ticking, easy reading from across the room.",
+      "A 30 cm wall clock with a silent-sweep movement — no second-hand ticking to break the quiet of a bedroom or study. Bold, high-contrast numerals stay easy to read from across the room, and the slim matte frame suits modern and traditional interiors alike. Runs on a single AA battery (not included).",
+    attributes: {
+      Material: "Plastic Frame with Glass Front",
+      Diameter: "30 cm",
+      Movement: "Silent Sweep (No Ticking)",
+      Display: "Bold Numerals",
+      Power: "1 × AA Battery (not included)",
+      Mounting: "Wall-Mounted",
+    },
   },
 
   // ── Beauty & Personal Care ──────────────────────────────────────────
@@ -511,7 +922,14 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "beauty-personal-care",
     isFeatured: true,
     description:
-      "Weightless matte liquid lipstick with one-swipe payoff that stays put for 8 hours. Enriched with vitamin E.",
+      "A weightless matte liquid lipstick that delivers rich, full colour in a single swipe and dries down to a comfortable, non-drying finish. It stays put through meals and long days for up to 8 hours, and a touch of vitamin E helps keep lips soft rather than parched. The precise applicator makes clean, defined edges easy.",
+    attributes: {
+      Finish: "Matte",
+      "Wear Time": "Up to 8 hours",
+      Coverage: "Full, One-Swipe",
+      Enriched: "Vitamin E",
+      Applicator: "Precision Wand",
+    },
   },
   {
     name: "Aloe Vera Gel (300ml)",
@@ -520,7 +938,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "beauty-personal-care",
     description:
-      "Multi-use 300 ml aloe gel for skin and hair — soothes, hydrates and calms sun-stressed skin. 98% pure aloe.",
+      "A multi-use 300 ml aloe vera gel made with 98% pure aloe that soothes, hydrates and calms sun-stressed or irritated skin. Lightweight and non-sticky, it sinks in fast and works across the board — as a daily moisturiser, after-sun soother, hair and scalp conditioner, or a base under makeup. Gentle enough for regular use on all skin types.",
+    attributes: {
+      "Net Volume": "300 ml",
+      "Aloe Content": "98% Pure Aloe",
+      "Skin Type": "All Skin Types",
+      Uses: "Skin, Hair & After-Sun",
+      Texture: "Lightweight, Non-Sticky",
+    },
   },
   {
     name: "Oil-Control Compact Powder",
@@ -529,7 +954,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 699,
     categorySlug: "beauty-personal-care",
     description:
-      "Lightweight compact that blurs shine and sets makeup without caking. With SPF-15 and a mirror-puff case.",
+      "A lightweight oil-control compact powder that blurs shine and sets makeup for a smooth, matte finish that lasts through the day without looking cakey. Built-in SPF-15 adds a little everyday sun defence, and the handy case includes a mirror and puff for quick touch-ups on the go. Buildable coverage that evens out tone.",
+    attributes: {
+      Finish: "Matte / Oil-Control",
+      SPF: "SPF 15",
+      Coverage: "Buildable",
+      Includes: "Mirror & Puff",
+      "Skin Type": "Normal to Oily",
+    },
   },
   {
     name: "Makeup Brush Set (7 pcs)",
@@ -538,7 +970,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 899,
     categorySlug: "beauty-personal-care",
     description:
-      "Seven soft synthetic brushes covering base, blush and full eye looks. Cruelty-free bristles, wooden handles.",
+      "A seven-piece makeup brush set that covers a full face — foundation and powder for base, a blush brush for cheeks, and a range of eye brushes for shadow, blending and detail. The soft synthetic bristles are cruelty-free, pick up and place product evenly, and are easy to wash. Balanced wooden handles make them comfortable to hold for beginners and pros alike.",
+    attributes: {
+      Pieces: "7 Brushes",
+      Bristles: "Soft Synthetic (Cruelty-Free)",
+      Handles: "Wooden",
+      Covers: "Base, Blush & Full Eye",
+      Care: "Wash with mild soap; air dry",
+    },
   },
   {
     name: "Herbal Face Wash (150ml)",
@@ -547,7 +986,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 349,
     categorySlug: "beauty-personal-care",
     description:
-      "Gentle 150 ml face wash with neem and tulsi extracts. Cleans deep without stripping moisture. Soap-free formula.",
+      "A gentle 150 ml herbal face wash powered by neem and tulsi extracts that cleanse deep into pores, lifting away dirt, oil and pollution without stripping the skin's natural moisture. The soap-free formula rinses clean and leaves skin feeling fresh and balanced rather than tight. Suitable for daily morning-and-night use on most skin types.",
+    attributes: {
+      "Net Volume": "150 ml",
+      "Key Ingredients": "Neem & Tulsi",
+      Formula: "Soap-Free",
+      "Skin Type": "Normal to Oily / Combination",
+      Usage: "Daily (AM & PM)",
+    },
   },
   {
     name: "Mini Hair Straightening Brush",
@@ -556,7 +1002,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1299,
     categorySlug: "beauty-personal-care",
     description:
-      "Compact heated brush that straightens and adds shine in one pass. Ceramic coating with a 30-second heat-up.",
+      "A compact heated straightening brush that smooths and adds shine in a single pass — brush through and frizz turns to sleek, glossy hair without a separate flat iron. The ceramic-coated bristles heat evenly to protect strands, and a 30-second heat-up gets you out the door fast. Its small size is perfect for travel and quick touch-ups.",
+    attributes: {
+      Type: "Heated Straightening Brush",
+      Coating: "Ceramic",
+      "Heat-Up": "~30 seconds",
+      Feature: "Compact / Travel-Friendly",
+      Power: "Corded Electric",
+      Care: "Cool fully before storing",
+    },
   },
 
   // ── Toys, Baby & Kids ───────────────────────────────────────────────
@@ -568,7 +1022,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "toys-baby-kids",
     isFeatured: true,
     description:
-      "100 chunky interlocking blocks in bright colours. Builds fine motor skills — and towers, forts and rockets. Ages 3+.",
+      "A 100-piece set of chunky interlocking building blocks in bright, cheerful colours that keeps little hands busy and screen-free for hours. Easy to grip and click together, they help build fine motor skills, colour recognition and imagination as kids create towers, forts, rockets and whatever else they dream up. Made from smooth, BPA-free plastic with no sharp edges.",
+    attributes: {
+      Pieces: "100 Blocks",
+      Material: "BPA-Free Plastic",
+      "Age Group": "3+ years",
+      Skills: "Motor Skills & Creativity",
+      Safety: "Smooth, No Sharp Edges",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Soft Plush Teddy Bear (30cm)",
@@ -577,7 +1039,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "toys-baby-kids",
     description:
-      "Huggable 30 cm teddy in ultra-soft plush with embroidered eyes — safe for even the youngest cuddlers.",
+      "A huggable 30 cm teddy bear in ultra-soft, cuddle-me plush that quickly becomes a favourite companion for naps, playtime and comfort. Safety-first embroidered eyes (no hard buttons to come loose) make it suitable for even the youngest cuddlers, and the gentle fill holds its shape. A sweet, ready-to-gift soft toy for birthdays and newborns.",
+    attributes: {
+      Height: "30 cm",
+      Material: "Ultra-Soft Plush",
+      Filling: "Soft Cotton Fibre",
+      Eyes: "Embroidered (Safe)",
+      "Age Group": "All ages",
+      Care: "Surface / gentle hand wash",
+    },
   },
   {
     name: "Remote Control Mini Car",
@@ -586,7 +1056,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 1299,
     categorySlug: "toys-baby-kids",
     description:
-      "Zippy rechargeable RC car with a full-function remote and glowing headlights. About 20 minutes of drive per charge.",
+      "A zippy remote-control mini car that goes forward, reverse, left and right with a responsive full-function remote — easy enough for young drivers and fun enough to chase around the house. Glowing headlights add to the excitement, and the rechargeable battery delivers about 20 minutes of drive per charge, so there's no steady stream of throwaway batteries.",
+    attributes: {
+      Control: "Full-Function Remote",
+      Battery: "Rechargeable (car)",
+      "Run Time": "~20 min per charge",
+      Feature: "Working Headlights",
+      "Age Group": "5+ years",
+      "Remote Battery": "Not included",
+    },
   },
   {
     name: "Baby Bib & Burp Cloth Set",
@@ -595,7 +1073,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "toys-baby-kids",
     description:
-      "Absorbent cotton bib and burp cloth set with snap closures. Gentle on skin and survives endless washes.",
+      "A soft, absorbent baby bib and burp cloth set in gentle cotton that soaks up drools, spills and little messes at mealtimes and after feeds. Skin-friendly and breathable against delicate skin, with secure snap closures that are quick to fasten and stay put. Built to survive endless washes and stay soft.",
+    attributes: {
+      Material: "Cotton",
+      Includes: "Bib + Burp Cloth",
+      Closure: "Snap Buttons",
+      Feature: "Absorbent & Skin-Friendly",
+      "Age Group": "0–2 years",
+      Care: "Machine washable",
+    },
   },
   {
     name: "Colouring Book & Crayons Combo",
@@ -604,7 +1090,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "toys-baby-kids",
     description:
-      "64-page colouring book with a 12-shade crayon pack. Screen-free fun for ages 3–8.",
+      "A screen-free colouring combo that pairs a 64-page colouring book full of fun, age-appropriate illustrations with a 12-shade crayon pack. It's a ready-to-go activity that keeps kids happily busy on trips, rainy days and quiet afternoons while building creativity, focus and colour skills. Smooth-glide, easy-grip crayons made for little hands.",
+    attributes: {
+      Includes: "64-Page Book + 12 Crayons",
+      "Age Group": "3–8 years",
+      Skills: "Creativity & Focus",
+      Feature: "Screen-Free Activity",
+      Safety: "Non-Toxic Crayons",
+    },
   },
   {
     name: "Kids' Cartoon Water Bottle",
@@ -613,7 +1106,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 499,
     categorySlug: "toys-baby-kids",
     description:
-      "450 ml spill-proof sipper with a pop-up straw and carry strap. BPA-free and school-bag friendly.",
+      "A cheerful 450 ml kids' water bottle with fun cartoon graphics that makes staying hydrated something they actually look forward to. The spill-proof, one-touch pop-up straw is easy for small hands, and the carry strap clips onto bags for school and outings. Made from BPA-free, food-safe material that's light to carry and simple to clean.",
+    attributes: {
+      Capacity: "450 ml",
+      Material: "BPA-Free Plastic",
+      Lid: "Spill-Proof Pop-Up Straw",
+      Feature: "Carry Strap",
+      "Age Group": "3+ years",
+      Care: "Hand wash",
+    },
   },
 
   // ── Stationery & Office ─────────────────────────────────────────────
@@ -624,7 +1125,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 349,
     categorySlug: "stationery-office",
     description:
-      "Ten smooth-flow 0.7 mm gel pens in assorted inks with comfort grips. Quick-dry — exam and doodle approved.",
+      "A set of ten smooth-flow 0.7 mm gel pens in assorted ink colours that glide across the page without skipping or smudging. Quick-drying ink makes them friendly for left-handers and exam sheets, while cushioned comfort grips keep hands relaxed through long notes and doodles alike. A colourful, everyday-value set for students and the office.",
+    attributes: {
+      Pack: "10 Pens",
+      "Tip Size": "0.7 mm",
+      "Ink Type": "Quick-Dry Gel",
+      Colours: "Assorted",
+      Grip: "Cushioned Comfort Grip",
+    },
   },
   {
     name: "Spiral Notebook Combo (3 pcs)",
@@ -633,7 +1141,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 399,
     categorySlug: "stationery-office",
     description:
-      "Three A5 spiral notebooks with 160 ruled pages each and laminated covers that survive backpacks.",
+      "A combo of three A5 spiral notebooks with 160 ruled pages each — plenty of room for class notes, to-do lists, journalling or work. The sturdy spiral binding lies flat and lets you fold covers all the way back, while the laminated covers shrug off the knocks and spills of everyday backpack life. Smooth paper that's kind to most pens.",
+    attributes: {
+      Pack: "3 Notebooks",
+      Size: "A5",
+      Pages: "160 Ruled (each)",
+      Binding: "Spiral (Lay-Flat)",
+      Cover: "Laminated",
+    },
   },
   {
     name: "Multi-Compartment Desk Organiser",
@@ -642,7 +1157,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "stationery-office",
     description:
-      "Keeps pens, notes, phone and clips in seven tidy compartments. Sturdy build with a small pull-out drawer.",
+      "A multi-compartment desk organiser that clears the clutter and keeps everything you reach for within arm's reach — pens, scissors, sticky notes, phone, clips and cards each get their own spot across seven compartments plus a small pull-out drawer for odds and ends. A sturdy, space-smart build that tidies a study table or work desk in seconds.",
+    attributes: {
+      Material: "Durable Plastic",
+      Compartments: "7 + Pull-Out Drawer",
+      Uses: "Pens, Phone, Notes & Clips",
+      Placement: "Desk / Tabletop",
+      Care: "Wipe clean",
+    },
   },
   {
     name: "Sticky Notes & Stickers Combo",
@@ -651,7 +1173,13 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 299,
     categorySlug: "stationery-office",
     description:
-      "Bright sticky notes in four sizes plus planner stickers and page flags — over 500 pieces in total.",
+      "A bright sticky notes and stickers combo with over 500 pieces to organise, plan and decorate — self-stick notes in four handy sizes, colourful planner stickers and slim page flags for marking books and files. The low-tack adhesive holds firm but peels away cleanly without tearing pages. A cheerful, practical bundle for students, planners and the desk.",
+    attributes: {
+      "Total Pieces": "500+",
+      Includes: "Sticky Notes (4 sizes), Stickers & Page Flags",
+      Adhesive: "Low-Tack, Removable",
+      Uses: "Notes, Planning & Bookmarking",
+    },
   },
   {
     name: "Wireless Optical Mouse",
@@ -661,7 +1189,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "stationery-office",
     isFeatured: true,
     description:
-      "2.4 GHz wireless mouse with silent clicks, adjustable DPI and 12-month battery life. Nano receiver included.",
+      "A 2.4 GHz wireless optical mouse that keeps your desk cable-free and your workspace quiet — silent clicks won't disturb a meeting, library or sleeping household. Adjustable DPI lets you switch between precise and fast cursor speeds, and a plug-and-play nano receiver tucks into a USB port with nothing to install. Up to 12 months of battery life on a single AA.",
+    attributes: {
+      Connectivity: "2.4 GHz Wireless",
+      Receiver: "Nano USB (included)",
+      Clicks: "Silent",
+      DPI: "Adjustable",
+      Battery: "1 × AA (up to 12 months)",
+      Compatibility: "Windows / macOS",
+    },
   },
   {
     name: "12-Digit Desktop Calculator",
@@ -670,7 +1206,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 599,
     categorySlug: "stationery-office",
     description:
-      "Large-display 12-digit calculator with dual solar-battery power and big, responsive keys.",
+      "A 12-digit desktop calculator built for everyday accounts, billing and study, with a large tilted display that's easy to read at a glance. Dual solar-plus-battery power means it keeps working in low light and never leaves you stranded, and the big, responsive keys make fast, error-free entry comfortable for long sessions.",
+    attributes: {
+      Display: "12-Digit (Large, Tilted)",
+      Power: "Dual Solar + Battery",
+      Keys: "Big Responsive Keys",
+      Uses: "Accounts / Billing / Study",
+      Type: "Desktop",
+    },
   },
 
   // ── Sports, Fitness & Outdoors ──────────────────────────────────────
@@ -682,7 +1225,15 @@ export const PRODUCTS: SeedProduct[] = [
     categorySlug: "sports-fitness",
     isFeatured: true,
     description:
-      "6 mm NBR yoga mat with a textured anti-slip surface and carry strap. Cushions knees and spine on hard floors.",
+      "A 6 mm NBR yoga mat with a textured anti-slip surface that grips the floor and stays put through downward dogs and dynamic flows. The extra cushioning protects knees, wrists and spine on hard floors, making it just as good for pilates, stretching and home workouts as for yoga. Lightweight, easy to roll up, and it comes with a carry strap for the studio or park.",
+    attributes: {
+      Material: "NBR Foam",
+      Thickness: "6 mm",
+      Surface: "Textured Anti-Slip",
+      Includes: "Carry Strap",
+      Uses: "Yoga / Pilates / Workout",
+      Care: "Wipe clean; air dry",
+    },
   },
   {
     name: "Resistance Band Set (5 pcs)",
@@ -691,7 +1242,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 799,
     categorySlug: "sports-fitness",
     description:
-      "Five colour-coded loop bands from light to extra-heavy, with a carry pouch and exercise guide.",
+      "A five-piece resistance band set with colour-coded loops from light to extra-heavy, so you can dial the challenge up as you get stronger. Great for strength training, mobility, physio and warm-ups, they work legs, glutes, arms and core with almost no space or equipment. A carry pouch keeps them together and an exercise guide helps you get started at home or on the go.",
+    attributes: {
+      Material: "Natural Latex",
+      Pieces: "5 Loop Bands",
+      Resistance: "Light to Extra-Heavy",
+      Includes: "Carry Pouch & Exercise Guide",
+      Uses: "Strength / Mobility / Physio",
+    },
   },
   {
     name: "Adjustable Skipping Rope",
@@ -700,7 +1258,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 349,
     categorySlug: "sports-fitness",
     description:
-      "Tangle-free skipping rope with ball-bearing handles and an adjustable 9-foot cable. Comfortable foam grips.",
+      "A tangle-free skipping rope with smooth ball-bearing handles that spin fast and steady for double-unders and speed work. The 9-foot cable adjusts to your height in seconds, and the comfortable foam grips stay secure even through sweaty, high-rep sessions. A compact, effective cardio tool for home, gym or travel.",
+    attributes: {
+      Handles: "Ball-Bearing, Foam Grip",
+      Cable: "Adjustable (up to 9 ft)",
+      Feature: "Tangle-Free, Fast Spin",
+      Uses: "Cardio / HIIT / Warm-Up",
+      Portability: "Compact & Travel-Friendly",
+    },
   },
   {
     name: "Sports Sipper Water Bottle (1L)",
@@ -709,7 +1274,15 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 549,
     categorySlug: "sports-fitness",
     description:
-      "1-litre gym sipper with a flip-top lock, time markings and carry loop. Sweat-proof matte body.",
+      "A 1-litre sports sipper built for the gym, field and long days out. The one-hand flip-top lock opens for a quick drink and clicks shut to stop leaks in your bag, while printed time markings nudge you to hit your hydration goals through the day. The sweat-proof matte body is easy to grip, and a carry loop clips it wherever you need it.",
+    attributes: {
+      Capacity: "1 Litre",
+      Material: "BPA-Free Plastic",
+      Lid: "Flip-Top Lock",
+      Feature: "Time Markings & Carry Loop",
+      Finish: "Sweat-Proof Matte",
+      Care: "Hand wash",
+    },
   },
   {
     name: "Hand Grip Strengthener (Pair)",
@@ -718,7 +1291,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 449,
     categorySlug: "sports-fitness",
     description:
-      "Pair of adjustable 10–40 kg hand grips with non-slip handles. Builds forearm and grip strength anywhere.",
+      "A pair of adjustable hand grip strengtheners with resistance that dials from 10 to 40 kg, so beginners and seasoned lifters can both find their level — and keep progressing. They build forearm, wrist and grip strength that carries over to lifting, sports and daily tasks, and the non-slip ergonomic handles stay comfortable and secure. Small enough to train anywhere, at your desk or on the couch.",
+    attributes: {
+      Pack: "Pair (2 Grips)",
+      Resistance: "Adjustable 10–40 kg",
+      Handles: "Non-Slip Ergonomic",
+      Builds: "Forearm, Wrist & Grip Strength",
+      Portability: "Compact",
+    },
   },
   {
     name: "Adjustable Sports Cap",
@@ -727,6 +1307,14 @@ export const PRODUCTS: SeedProduct[] = [
     mrp: 549,
     categorySlug: "sports-fitness",
     description:
-      "Quick-dry sports cap with a curved brim, breathable eyelets and adjustable strap. One size fits most.",
+      "A lightweight quick-dry sports cap that shades your eyes and wicks away sweat during runs, gym sessions and days in the sun. A pre-curved brim cuts glare, breathable eyelets keep your head cool, and the adjustable back strap dials in a secure fit. One size fits most, for men and women alike.",
+    attributes: {
+      Material: "Quick-Dry Polyester",
+      Brim: "Pre-Curved",
+      Ventilation: "Breathable Eyelets",
+      Closure: "Adjustable Strap",
+      Size: "One Size Fits Most",
+      Gender: "Unisex",
+    },
   },
 ];

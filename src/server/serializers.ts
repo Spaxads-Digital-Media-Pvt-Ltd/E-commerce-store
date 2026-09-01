@@ -15,6 +15,36 @@ export function parseImages(raw: string): string[] {
   return [];
 }
 
+export function parseSizes(raw: string | null): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter((s) => typeof s === "string" && s.length > 0);
+    }
+  } catch {
+    // fall through
+  }
+  return [];
+}
+
+export function parseAttributes(
+  raw: string | null
+): { label: string; value: string }[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return Object.entries(parsed as Record<string, unknown>)
+        .filter(([, v]) => v != null && String(v).length > 0)
+        .map(([label, value]) => ({ label, value: String(value) }));
+    }
+  } catch {
+    // fall through
+  }
+  return [];
+}
+
 export function toProductDTO(product: ProductWithCategory): ProductDTO {
   return {
     id: product.id,
@@ -31,6 +61,8 @@ export function toProductDTO(product: ProductWithCategory): ProductDTO {
     ratingCount: product.ratingCount,
     isActive: product.isActive,
     isFeatured: product.isFeatured,
+    sizes: parseSizes(product.sizes),
+    attributes: parseAttributes(product.attributes),
   };
 }
 
@@ -65,6 +97,7 @@ export function toOrderDTO(order: OrderWithItems): OrderDTO {
       qty: i.qty,
       image: i.image,
       productSlug: i.product?.slug,
+      size: i.size,
     })),
   };
 }

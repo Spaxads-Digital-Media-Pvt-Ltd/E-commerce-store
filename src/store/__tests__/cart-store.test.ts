@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
-import { useCart } from "@/store/cart-store";
+import { useCart, lineKey } from "@/store/cart-store";
 import { MAX_QTY_PER_ITEM } from "@/lib/constants";
 
 const product = (over: Partial<Parameters<typeof addToCart>[0]> = {}) => ({
@@ -21,6 +21,7 @@ function addToCart(
     price: number;
     image: string;
     stock: number;
+    size?: string | null;
   },
   qty?: number
 ) {
@@ -65,10 +66,23 @@ describe("cart store", () => {
   it("removes items and clears the cart", () => {
     addToCart(product());
     addToCart(product({ productId: "p2", slug: "other" }));
-    useCart.getState().removeItem("p1");
+    useCart.getState().removeItem(lineKey({ productId: "p1" }));
     expect(useCart.getState().items.map((i) => i.productId)).toEqual(["p2"]);
     useCart.getState().clear();
     expect(useCart.getState().items).toHaveLength(0);
+  });
+
+  it("keeps the same product in different sizes as separate lines", () => {
+    addToCart(product({ size: "M" }));
+    addToCart(product({ size: "L" }));
+    addToCart(product({ size: "M" }), 1); // increments the M line, not a new one
+    const items = useCart.getState().items;
+    expect(items).toHaveLength(2);
+    expect(items.find((i) => i.size === "M")?.qty).toBe(2);
+    expect(items.find((i) => i.size === "L")?.qty).toBe(1);
+    // removing one size leaves the other
+    useCart.getState().removeItem(lineKey({ productId: "p1", size: "M" }));
+    expect(useCart.getState().items.map((i) => i.size)).toEqual(["L"]);
   });
 
   it("computes subtotal and count across lines", () => {

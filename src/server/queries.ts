@@ -17,13 +17,22 @@ const productInclude = {
   category: { select: { name: true, slug: true } },
 } satisfies Prisma.ProductInclude;
 
+// Categories retired from the storefront — hidden from all navigation and
+// their category page 404s. Their products stay in the DB (kept inactive) so
+// existing orders that reference them remain intact and unbroken.
+const HIDDEN_CATEGORY_SLUGS = new Set(["toys-baby-kids"]);
+
 export async function getCategories(): Promise<CategoryDTO[]> {
-  return db.category.findMany({ orderBy: { position: "asc" } });
+  const categories = await db.category.findMany({
+    orderBy: { position: "asc" },
+  });
+  return categories.filter((c) => !HIDDEN_CATEGORY_SLUGS.has(c.slug));
 }
 
 // cache(): the segment layout (404 guard) and the page share one query.
 export const getCategoryBySlug = cache(
   async (slug: string): Promise<CategoryDTO | null> => {
+    if (HIDDEN_CATEGORY_SLUGS.has(slug)) return null;
     return db.category.findUnique({ where: { slug } });
   }
 );
